@@ -1,0 +1,8 @@
+
+.folders-container {
+    display: inline-flex;
+}
+
+.bookmark-folder {
+    width: min-content;
+}
