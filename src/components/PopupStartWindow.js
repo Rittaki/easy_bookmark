@@ -1,14 +1,41 @@
 import './PopupStartWindow.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import ChooseFolderModal from './Modals/ChooseFolderModal';
+import AskUserModal from './Modals/AskUserModal';
+import ChooseBookmarkNameModal from './Modals/ChooseBookmarkNameModal';
+import ChooseFolderNameModal from './Modals/ChooseFolderNameModal';
+import ChooseFolderLocationModal from './Modals/ChooseFolderLocationModal';
 
 function PopupStartWindow() {
-  const [show, setShow] = useState(false);
+  const [state, setState] = useState({ currentUrl: null, openModal: '', isAnotherFolder: false });
+  // const [openModal, toggleModal] = useState('');
+  // const [currentUrl, setCurrentUrl] = useState('');
+  // const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // function setModalOpen(value) {
+  //   console.log(value);
+  //   setState((prevState) => ({ ...prevState, modalOpen: value }))
+  // }
+
+  const handleClose = () => { 
+    setState((prevState) => ({ ...prevState, openModal: '' }));
+    // toggleModal(''); 
+  }
+  // const handleShow = () => setShow(true);
+  useEffect(() => {
+    console.log(state);
+  }, [state] )
+
+  useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const currentTab = tabs[0];
+      const url = currentTab.url;
+      console.log(url);
+      setState((prevState) => ({ ...prevState, currentUrl: url }));
+    });
+  }, []);
 
   return (
     <div className="row">
@@ -17,8 +44,13 @@ function PopupStartWindow() {
           <div className="row buttons-row">
             <ul className="nav nav-pills">
               <li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button" onClick={handleShow}>New Bookmark</button>
-                <ChooseFolderModal show={show} onHide={handleClose} />
+                <button type="button" className="btn btn-primary nav-button" onClick={() => {setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' }))}}>New Bookmark</button>
+                <AskUserModal show={state.openModal === 'ask-user-modal'} onHide={handleClose} setState={setState} state={state} />
+                <ChooseFolderModal show={state.openModal === 'choose-folder-modal'} onHide={handleClose} setState={setState} state={state} />
+                <ChooseBookmarkNameModal show={state.openModal === 'choose-bookmark-name-modal'} onHide={handleClose} setState={setState} state={state} />
+                <ChooseFolderNameModal show={state.openModal === 'choose-folder-name-modal'} onHide={handleClose} setState={setState} state={state} />
+                <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
+                {/*<AskUserModal show={show} onHide={handleClose} currentUrl={state.currentUrl} />*/}
               </li>
               <li className="nav-item">
                 <button type="button" className="btn btn-primary nav-button">Edit</button>
@@ -132,7 +164,7 @@ function PopupStartWindow() {
                   <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32" className="rounded-circle flex-shrink-0" />
                   <div className="d-flex gap-2 w-100 align-items-center justify-content-between">
                     <div>
-                    <h6 className="mb-0">List group item heading</h6>
+                      <h6 className="mb-0">List group item heading</h6>
                       <p className="mb-0 opacity-75">Some placeholder content in a paragraph.</p>
                     </div>
                     <small className="opacity-50 text-nowrap">New</small>

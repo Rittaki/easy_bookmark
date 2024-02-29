@@ -38,6 +38,7 @@ function ChooseFolderModal(props) {
                             <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
                             <section >
                                 <h6 >Choose/create another folder...</h6>
+                                <Button variant="info" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'choose-folder-name-modal' }))}}>Click</Button>
                             </section>
                         </div>
                     </div>
@@ -45,9 +46,8 @@ function ChooseFolderModal(props) {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onHide}>Close</Button>
-                <Button variant="success" onClick={props.onHide}>Next</Button> {// onClick will navigate to the next modal in the flow
-                }
+                <Button variant="secondary" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' }))}}>Back</Button>
+                <Button variant="success" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: false }))}}>Next</Button>
             </Modal.Footer>
 
         </Modal>

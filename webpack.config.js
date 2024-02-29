@@ -5,7 +5,10 @@ const CopyPlugin = require("copy-webpack-plugin");
 const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    popup: path.resolve('./src/index.js'),
+    background: path.resolve('./src/scripts/background.js'),
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
