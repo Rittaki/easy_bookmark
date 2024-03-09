@@ -9,24 +9,19 @@ import ChooseFolderNameModal from './Modals/ChooseFolderNameModal';
 import ChooseFolderLocationModal from './Modals/ChooseFolderLocationModal';
 
 function PopupStartWindow() {
-  const [state, setState] = useState({ currentUrl: null, openModal: '', isAnotherFolder: false });
-  // const [openModal, toggleModal] = useState('');
-  // const [currentUrl, setCurrentUrl] = useState('');
-  // const [show, setShow] = useState(false);
+  const [state, setState] = useState({
+    currentUrl: null, openModal: '', isAnotherFolder: false,
+    lastBookmark: {url: "", title: '', folderName: '', timestamp: null},
+    lastFolder: {folderName: '', parentFolder: '', linksNumber: 0}
+  });
 
-  // function setModalOpen(value) {
-  //   console.log(value);
-  //   setState((prevState) => ({ ...prevState, modalOpen: value }))
-  // }
-
-  const handleClose = () => { 
+  const handleClose = () => {
     setState((prevState) => ({ ...prevState, openModal: '' }));
-    // toggleModal(''); 
   }
-  // const handleShow = () => setShow(true);
+
   useEffect(() => {
     console.log(state);
-  }, [state] )
+  }, [state])
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -44,13 +39,12 @@ function PopupStartWindow() {
           <div className="row buttons-row">
             <ul className="nav nav-pills">
               <li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button" onClick={() => {setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' }))}}>New Bookmark</button>
+                <button type="button" className="btn btn-primary nav-button" onClick={() => { setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' })) }}>New Bookmark</button>
                 <AskUserModal show={state.openModal === 'ask-user-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderModal show={state.openModal === 'choose-folder-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseBookmarkNameModal show={state.openModal === 'choose-bookmark-name-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderNameModal show={state.openModal === 'choose-folder-name-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
-                {/*<AskUserModal show={show} onHide={handleClose} currentUrl={state.currentUrl} />*/}
               </li>
               <li className="nav-item">
                 <button type="button" className="btn btn-primary nav-button">Edit</button>

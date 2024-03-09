@@ -5,16 +5,23 @@ import { useState, useEffect } from 'react';
 import ChooseFolderModal from './ChooseFolderModal';
 
 function AskUserModal(props) {
-    // const [modalOpen, setModalOpen] = useState('');
-    const [showFolderModal, setShowFolderModal] = useState(false);
 
-    // const handleNext = () => {
-    //     setShowFolderModal(true);
-    //     props.onHide(true)
-    //   };
+    const updateBookmarkObject = (newUrl) => {
+        const currentBookmark = props.state.lastBookmark;
+        const updatedBookmark = {
+            ...currentBookmark,
+            url: newUrl,
+        };
+        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark}))
+    }
+
+    const updateOpenModal = (modalToOpen) => {
+        props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
+        updateBookmarkObject(props.state.currentUrl);
+    }
 
     return (
-        
+
         <Modal className="modal-window" show={props.show} onHide={props.onHide}>
             <Modal.Header closeButton>
                 <Modal.Title>New Bookmark</Modal.Title>
@@ -32,10 +39,7 @@ function AskUserModal(props) {
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>Close</Button>
-                <Button variant="success" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'choose-folder-modal' }))}}>Next</Button> {// onClick will navigate to the next modal in the flow
-                }
-                {/*<ChooseFolderModal show={props.state.openModal === 'choose-folder-modal'} onHide={props.onHide} setState={props.setState} state={props.state}/>*/}
-                {/*{showFolderModal && <ChooseFolderModal show={showFolderModal} closeModal={false} />}*/}
+                <Button variant="success" onClick={() => { updateOpenModal('choose-folder-modal') }}>Next</Button>
             </Modal.Footer>
         </Modal>
     );

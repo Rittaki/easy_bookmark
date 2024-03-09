@@ -1,0 +1,12 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# production
+/build
+/dist
+
+# dotenv environment variables file
+.env
+.env.test

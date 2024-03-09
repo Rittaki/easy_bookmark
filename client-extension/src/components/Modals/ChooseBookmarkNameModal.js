@@ -1,11 +1,55 @@
 import './ChooseBookmarkNameModal.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function ChooseBookmarkNameModal(props) {
-    return (
+    const [toSave, setToSave] = useState(false);
+    const [inputValue, setInputValue] = useState("");
 
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    const handleSave = (e) => {
+        // props.onHide();
+        chrome.runtime.sendMessage({
+            action: "addBookmark",
+            bookmark: props.state.lastBookmark
+        }, (response) => {
+            if (response.success) {
+                console.log('Bookmark added', response);
+            };
+        });
+        setToSave(false);
+    };
+
+    useEffect(() => {
+        if (toSave) {
+            handleSave();
+        };
+    }, [props.state.lastBookmark.title]);
+
+    const updateBookmarkObject = (bookmarkTitle) => {
+        props.onHide();
+        const currentBookmark = props.state.lastBookmark;
+        const updatedBookmark = {
+            ...currentBookmark,
+            title: bookmarkTitle,
+            timestamp: Date().toString()
+        };
+        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }));
+        setToSave(true);
+    };
+
+    const updateOpenModal = (modalToOpen) => {
+        props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
+        // updateBookmarkObject(inputValue);
+    };
+
+
+
+    return (
         <Modal className="modal-window" show={props.show} onHide={props.onHide}>
 
             <Modal.Header closeButton>
@@ -43,8 +87,12 @@ function ChooseBookmarkNameModal(props) {
                         <div className="form-check">
                             <input className="form-check-input" type="radio" name="listGroupRadioGrid" id="listGroupRadioGrid4" />
                             <label className="list-group-item py-2 pe-5" htmlFor="listGroupRadioGrid4">
-                                <strong className="fw-semibold">Fourth disabled radio</strong>
-                                <span className="d-block small opacity-75">This option is disabled</span>
+                                <div className="input-group mb-3">
+                                    <input type="text" className="form-control"
+                                        value={inputValue}
+                                        onChange={handleInputChange}
+                                        placeholder="Type here your option" />
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -52,9 +100,11 @@ function ChooseBookmarkNameModal(props) {
             </Modal.Body>
 
             <Modal.Footer>
-                {(props.state.isAnotherFolder) ? (<Button variant="secondary" onClick={() => { props.setState((prevState) => ({ ...prevState, openModal: 'choose-folder-location-modal' })) }}>Back</Button>)
-                    : <Button variant="secondary" onClick={() => { props.setState((prevState) => ({ ...prevState, openModal: 'choose-folder-modal' })) }}>Back</Button>}
-                <Button variant="success" onClick={props.onHide}>Next</Button>
+                <Button variant="secondary" onClick={() => {
+                    (props.state.isAnotherFolder) ? updateOpenModal('choose-folder-location-modal')
+                        : updateOpenModal('choose-folder-modal')
+                }}>Back</Button>
+                <Button variant="success" onClick={() => { updateBookmarkObject(inputValue); }}>Save</Button>
             </Modal.Footer>
 
         </Modal>

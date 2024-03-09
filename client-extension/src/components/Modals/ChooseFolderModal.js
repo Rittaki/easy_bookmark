@@ -4,6 +4,11 @@ import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 
 function ChooseFolderModal(props) {
+
+    const updateOpenModal = (modalToOpen) => {
+        props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
+    }
+
     return (
 
         <Modal className="modal-window" show={props.show} onHide={props.onHide}>
@@ -38,7 +43,7 @@ function ChooseFolderModal(props) {
                             <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
                             <section >
                                 <h6 >Choose/create another folder...</h6>
-                                <Button variant="info" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'choose-folder-name-modal' }))}}>Click</Button>
+                                <Button variant="info" onClick={() => { updateOpenModal('choose-folder-name-modal') }}>Click</Button>
                             </section>
                         </div>
                     </div>
@@ -46,8 +51,10 @@ function ChooseFolderModal(props) {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' }))}}>Back</Button>
-                <Button variant="success" onClick={() => {props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: false }))}}>Next</Button>
+                <Button variant="secondary" onClick={() => { updateOpenModal('ask-user-modal') }}>Back</Button>
+                <Button variant="success" onClick={() => {
+                    props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: false }))
+                }}>Next</Button>
             </Modal.Footer>
 
         </Modal>
