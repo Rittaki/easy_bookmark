@@ -1,29 +1,27 @@
 const express = require('express');
+const { 
+    getBookmark,
+    getBookmarks,
+    createBookmark,
+    deleteBookmark,
+    updateBookmark
+ } = require('../controllers/bookmarkController');
+
 const router = express.Router();
 
 // GET all bookmarks
-router.get('/', (req, res) => {
-    res.json({ mssg: 'GET all bookmarks' });
-});
+router.get('/', getBookmarks);
 
 // GET a single bookmark
-router.get('/:id', (req, res) => {
-    res.json({ mssg: 'GET a single bookmark' });
-});
+router.get('/:id', getBookmark);
 
 // POST a new bookmark
-router.post('/', (req, res) => {
-    res.json({ mssg: 'POST a new bookmark' });
-});
+router.post('/', createBookmark);
 
 // DELETE a bookmark
-router.delete('/:id', (req, res) => {
-    res.json({ mssg: 'DELETE a bookmark' });
-});
+router.delete('/:id', deleteBookmark);
 
 // UPDATE a bookmark
-router.patch('/:id', (req, res) => {
-    res.json({ mssg: 'UPDATE a bookmark' });
-});
+router.patch('/:id', updateBookmark);
 
 module.exports = router;
