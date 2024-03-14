@@ -7,12 +7,13 @@ import AskUserModal from './Modals/AskUserModal';
 import ChooseBookmarkNameModal from './Modals/ChooseBookmarkNameModal';
 import ChooseFolderNameModal from './Modals/ChooseFolderNameModal';
 import ChooseFolderLocationModal from './Modals/ChooseFolderLocationModal';
+import FoldersList from './Sidebar/FoldersList/FoldersList';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
     currentUrl: null, openModal: '', isAnotherFolder: false,
-    lastBookmark: {url: "", title: '', folderName: '', timestamp: null},
-    lastFolder: {folderName: '', parentFolder: '', linksNumber: 0}
+    lastBookmark: { url: "", title: '', folderName: '', timestamp: null },
+    lastFolder: { folderName: '', parentFolder: '', linksNumber: 0 }
   });
 
   const handleClose = () => {
@@ -40,11 +41,13 @@ function PopupStartWindow() {
             <ul className="nav nav-pills">
               <li className="nav-item">
                 <button type="button" className="btn btn-primary nav-button" onClick={() => { setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' })) }}>New Bookmark</button>
+
                 <AskUserModal show={state.openModal === 'ask-user-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderModal show={state.openModal === 'choose-folder-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseBookmarkNameModal show={state.openModal === 'choose-bookmark-name-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderNameModal show={state.openModal === 'choose-folder-name-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
+                
               </li>
               <li className="nav-item">
                 <button type="button" className="btn btn-primary nav-button">Edit</button>
@@ -56,72 +59,9 @@ function PopupStartWindow() {
           </div>
         </div>
         <div className="container">
-          <aside id="sidebar" className="sidebar">
-            <ul className="list-unstyled ps-0">
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Education
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#recipes-collapse" aria-expanded="false" aria-controls="collapseExample">
-                  Recipes
-                </button>
-                <ul className="list-unstyled pt-1 ps-3 collapse" id="recipes-collapse">
-                  <li className="mb-1">
-                    <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                      Drinks
-                    </button>
-                  </li>
-                  <li className="mb-1">
-                    <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                      Patisserie
-                    </button>
-                  </li>
-                </ul>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Sports & Fitness
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Beauty
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Travel
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Home Decor
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Business
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Family
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Pets
-                </button>
-              </li>
-              <li className="mb-1">
-                <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
-                  Art
-                </button>
-              </li>
-            </ul>
-          </aside>
+
+          <FoldersList />
+          
         </div>
       </div>
       <div className="col-8 right-side">
