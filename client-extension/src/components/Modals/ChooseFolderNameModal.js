@@ -24,7 +24,7 @@ function ChooseFolderNameModal(props) {
         const currentBookmark = props.state.lastBookmark;
         const updatedBookmark = {
             ...currentBookmark,
-            folderName: newFolder,
+            folder: newFolder,
         };
         props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
     };

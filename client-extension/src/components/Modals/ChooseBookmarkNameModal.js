@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 function ChooseBookmarkNameModal(props) {
     const [toSave, setToSave] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const [error, setError] = useState(null); // handle error later, after handling set to null again
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -18,7 +19,11 @@ function ChooseBookmarkNameModal(props) {
             bookmark: props.state.lastBookmark
         }, (response) => {
             if (response.success) {
-                console.log('Bookmark added', response);
+                console.log('Bookmark added (message from client)', response);
+                setError(null);
+            }
+            else {
+                setError(json.error);
             };
         });
         setToSave(false);
@@ -35,8 +40,8 @@ function ChooseBookmarkNameModal(props) {
         const currentBookmark = props.state.lastBookmark;
         const updatedBookmark = {
             ...currentBookmark,
-            title: bookmarkTitle,
-            timestamp: Date().toString()
+            title: bookmarkTitle
+            // timestamp: Date().toString()
         };
         props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }));
         setToSave(true);
