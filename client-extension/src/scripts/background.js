@@ -183,7 +183,7 @@ async function fetchFolders(parentFolder) {
 
 async function fetchBookmarks(folder) {
     try {
-        const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${folder}`);
+        const response = await fetch(`http://localhost:4000/api/bookmarks/?folder=${folder}`);
         console.log(response);
         if (response.ok) {
             const json = await response.json();

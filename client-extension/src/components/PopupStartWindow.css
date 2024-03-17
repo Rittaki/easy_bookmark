@@ -69,6 +69,7 @@
     display: inline-block !important;
     overflow-y: scroll;
     max-height: 525px;
+    width: 510px;
 }
 
 .bookmark-folder {

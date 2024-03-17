@@ -1,5 +1,6 @@
 .folders-container-right {
     display: inline-flex;
     padding-right: inherit !important;
+    min-width: 490px;
 }
 

@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 
 // get all bookmarks
 const getBookmarks = async (req, res) => {
-    const bookmarks = await Bookmark.find({}).sort({createdAt: -1}); // add conditions inside brackets, for example: { folder: 'Education'} returns all bookmarks that are in Education folder
+    const reqQuery = req.query;
+    console.log(reqQuery);
+
+    const bookmarks = await Bookmark.find(reqQuery).sort({createdAt: -1}); // add conditions inside brackets, for example: { folder: 'Education'} returns all bookmarks that are in Education folder
 
     res.status(200).json(bookmarks);
 };
