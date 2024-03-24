@@ -15,9 +15,10 @@ function ChooseFolderNameModal(props) {
         const currentFolder = props.state.lastFolder;
         const updatedFolder = {
             ...currentFolder,
-            folderName: newFolder,
+            name: newFolder,
         };
-        props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }))
+        props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }));
+        setInputValue("");
     };
 
     const updateBookmarkObject = (newFolder) => {

@@ -20,6 +20,7 @@
     "scripting",
     "tabs",
     "activeTab",
-    "storage", "bookmarks"
+    "storage", "bookmarks",
+    "contextMenus"
   ]
 }

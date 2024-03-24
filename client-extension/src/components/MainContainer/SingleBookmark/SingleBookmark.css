@@ -1,3 +1,8 @@
 .bookmark-url {
-    width: 300px;
+    width: 250px;
+}
+
+.bookmark-title {
+    width: 150px;
+    margin: 0px;
 }

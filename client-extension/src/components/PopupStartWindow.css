@@ -66,10 +66,12 @@
 }
 
 .folders-row {
-    display: inline-block !important;
+    /* display: inline-block !important; */
     overflow-y: scroll;
     max-height: 525px;
-    width: 510px;
+    justify-content: center;
+    /* min-width: 100%; */
+    /* width: -webkit-fill-available; */
 }
 
 .bookmark-folder {

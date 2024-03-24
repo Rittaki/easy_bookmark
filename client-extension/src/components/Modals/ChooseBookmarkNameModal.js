@@ -12,7 +12,34 @@ function ChooseBookmarkNameModal(props) {
         setInputValue(e.target.value);
     };
 
-    const handleSave = (e) => {
+    const handleFolderSave = (e) => {
+        if (props.state.isAnotherFolder) {
+            chrome.runtime.sendMessage({
+                action: "addFolder",
+                folder: props.state.lastFolder
+            }, (response) => {
+                if (response.success) {
+                    console.log('Folder added (message from client)', response);
+                    setError(null);
+                }
+                else {
+                    setError(json.error);
+                };
+            })
+
+            // console.log("after sending a folder");
+            // const defaultFolder = {
+            //     name: "",
+            //     parentFolder: "",
+            //     linksNumber: 0,
+            // };
+            // props.setState((prevState) => ({ ...prevState, lastFolder: defaultFolder }));
+
+            props.setState((prevState) => ({ ...prevState, isAnotherFolder: false }));
+        }
+    };
+
+    const handleBookmarkSave =  (e) => {
         // props.onHide();
         chrome.runtime.sendMessage({
             action: "addBookmark",
@@ -25,18 +52,34 @@ function ChooseBookmarkNameModal(props) {
             else {
                 setError(json.error);
             };
-        });
-        setToSave(false);
+        })
+
+        // console.log("after sending a bookmark");
+        // const defaultBookmark = {
+        //     title: "",
+        //     url: "",
+        //     folder: "",
+        // };
+        // props.setState((prevState) => ({ ...prevState, lastBookmark: defaultBookmark }));
     };
 
     useEffect(() => {
-        if (toSave) {
-            handleSave();
+        const handleSave = () => {
+            console.log("inside 'handleSave' method");
+            if (toSave) {
+                console.log("inside 'handleSave' method condition");
+                handleBookmarkSave();
+                handleFolderSave();
+                setToSave(false);
+                setInputValue("");
+                props.onHide();
+            }
         };
-    }, [props.state.lastBookmark.title]);
+        handleSave();
+    }, [toSave]);
 
     const updateBookmarkObject = (bookmarkTitle) => {
-        props.onHide();
+        // props.onHide();
         const currentBookmark = props.state.lastBookmark;
         const updatedBookmark = {
             ...currentBookmark,
@@ -49,6 +92,7 @@ function ChooseBookmarkNameModal(props) {
 
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
+        setInputValue("");
         // updateBookmarkObject(inputValue);
     };
 

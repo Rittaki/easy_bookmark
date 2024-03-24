@@ -1,0 +1,6 @@
+.location-container {
+    height: 200px;
+    overflow-y: scroll;
+    background-color: #def4f8;
+    width: 466px;
+}

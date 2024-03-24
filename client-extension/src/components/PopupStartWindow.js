@@ -13,14 +13,30 @@ import BookmarksContainer from './MainContainer/BookmarksContainer/BookmarksCont
 
 function PopupStartWindow() {
   const [state, setState] = useState({
+    currentClickedLocationFolder: "main",
     currentClickedFolder: "main",
     currentUrl: null, openModal: '', isAnotherFolder: false,
     lastBookmark: { title: '', url: '', folder: '' },
-    lastFolder: { folderName: '', parentFolder: '', linksNumber: 0 }
+    lastFolder: { name: '', parentFolder: '', linksNumber: 0 }
   });
 
   const handleClose = () => {
     setState((prevState) => ({ ...prevState, openModal: '' }));
+    setState((prevState) => ({ ...prevState, currentClickedLocationFolder: 'main' }));
+
+    const defaultBookmark = {
+      title: "",
+      url: "",
+      folder: "",
+    };
+    setState((prevState) => ({ ...prevState, lastBookmark: defaultBookmark }));
+    
+    const defaultFolder = {
+      name: "",
+      parentFolder: "",
+      linksNumber: 0,
+    };
+    setState((prevState) => ({ ...prevState, lastFolder: defaultFolder }));
   }
 
   useEffect(() => {
@@ -63,8 +79,8 @@ function PopupStartWindow() {
         </div>
         <div className="container folders-list-container">
 
-          <FoldersList setState={setState} state={state}/>
-          
+          <FoldersList setState={setState} state={state} />
+
         </div>
       </div>
       <div className="col-8 right-side">
@@ -74,10 +90,10 @@ function PopupStartWindow() {
               <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
             </form>
           </div>
-          <div className="row folders-row mt-2">
+          <div className="row folders-row ">
 
-            <FoldersContainer setState={setState} state={state}/>
-            <BookmarksContainer setState={setState} state={state}/>
+            <FoldersContainer setState={setState} state={state} />
+            <BookmarksContainer setState={setState} state={state} />
 
           </div>
         </div>

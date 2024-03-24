@@ -1,0 +1,24 @@
+
+.single-folder {
+    padding: 0 !important;
+    width: 150px !important;
+    background-color: #def4f8 !important;
+    align-items: center;
+    border: transparent !important;
+}
+
+.single-folder:hover {
+    background-color: #c3f6ff !important;
+}
+
+.folder-details {
+    width: 120px;
+}
+
+.folder-name {
+    margin-bottom: 0px;
+}
+
+.highlighted {
+    background-color: #c3f6ff !important;
+}

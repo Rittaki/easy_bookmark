@@ -5,6 +5,11 @@ import "./FoldersContainer.css";
 function FoldersContainer(props) {
     const [folders, setFolders] = useState(null);
 
+    const handleFolderDoubleClick = () => {
+        // Load new folder logic here
+        console.log('Double-clicked on folder!');
+    };
+
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getFolders",
@@ -20,7 +25,7 @@ function FoldersContainer(props) {
     return (
         <div className="folders-container-right row row-cols-3">
             {folders && folders.map((folder) => (
-                <SingleFolder key={folder._id} folder={folder} setFolders={setFolders} setState={props.setState} state={props.state}/>
+                <SingleFolder key={folder._id} folder={folder} setFolders={setFolders} setState={props.setState} state={props.state} onDoubleClick={handleFolderDoubleClick}/>
             ))}
         </div>
     );
