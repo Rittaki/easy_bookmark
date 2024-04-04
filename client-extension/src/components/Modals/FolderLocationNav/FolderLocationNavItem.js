@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import "./FolderLocationNavItem.css"
 
-function FolderItem(props) {
+function FolderLocationNavItem(props) {
     const [folders, setFolders] = useState(null);
     const [toLoad, setToLoad] = useState(false);
 
@@ -19,22 +20,22 @@ function FolderItem(props) {
         };
     }, [toLoad]);
 
-    const updateCurrentFolder = (folder) => {
-        props.setState((prevState) => ({ ...prevState, currentFolderToLoad: folder }));
+    const updateCurrentLocationFolder = (folder) => {
+        props.setState((prevState) => ({ ...prevState, currentClickedLocationFolder: folder }));
     };
 
     return (
         <li className="mb-1 mt-1">
-            <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target={"#" + props.folder.name.split(" ").join("") + "-collapse"} aria-expanded="false" onClick={() => { setToLoad(true); updateCurrentFolder(props.folder.name);}}>
+            <button className="btn btn-toggle-location align-items-center collapsed focus-ring" data-bs-toggle="collapse" data-bs-target={"#location-" + props.folder.name.split(" ").join("") + "-collapse"} aria-expanded="false" onFocus={() => { setToLoad(true); updateCurrentLocationFolder(props.folder.name); }}>
                 {props.folder.name}
             </button>
-            <ul className="list-unstyled ps-3 collapse" id={props.folder.name.split(" ").join("") + "-collapse"}>
+            <ul className="list-unstyled ps-3 collapse" id={"location-" + props.folder.name.split(" ").join("") + "-collapse"}>
                 {folders && folders.map((folder) => (
-                    <FolderItem key={folder._id} folder={folder} setState={props.setState} state={props.state}/>
+                    <FolderLocationNavItem key={folder._id} folder={folder}/>
                 ))}
             </ul>
         </li>
     );
 };
 
-export default FolderItem;
+export default FolderLocationNavItem;

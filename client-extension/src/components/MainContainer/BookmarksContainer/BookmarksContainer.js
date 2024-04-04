@@ -7,14 +7,14 @@ function BookmarksContainer(props) {
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getBookmarks",
-            folder: props.state.currentClickedFolder
+            folder: props.state.currentFolderToLoad
         }, (response) => {
             if (response.success) {
-                console.log(`${props.state.currentClickedFolder} bookmarks fetched`, response.success);
+                console.log(`${props.state.currentFolderToLoad} bookmarks fetched`, response.success);
                 setBookmarks(response.success);
             };
         });
-    }, [props.state.currentClickedFolder]);
+    }, [props.state.currentFolderToLoad]);
 
     return (
         <div className="links-container">

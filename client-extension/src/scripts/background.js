@@ -1,6 +1,47 @@
-chrome.runtime.onInstalled.addListener(() => {
+
+// function clickHandler(info, tab) {
+//     console.log(tab);
+//     // console.log('Edit folder clicked!');
+//     console.log('check');
+//     if ((info.menuItemId === 'editFolder') && (tab.status === 'complete')) {
+//         // Handle the edit action here (e.g., open an edit form)
+//         console.log('Edit folder clicked!');
+//         // You can also pass additional data from the context menu (e.g., folder ID)
+//         // info.selectionText contains the selected text (if any)
+//     }
+// }
+
+chrome.runtime.onInstalled.addListener(async () => {
     console.log('Installed EasyBookmark');
+    // chrome.contextMenus.create({
+    //     id: 'editFolder',
+    //     title: 'Edit Folder', // Displayed text for the context menu item
+    //     contexts: ['link'], // Specify where the context menu should appear (e.g., selection, link, page)
+    // });
+
+    // chrome.contextMenus.onClicked.addListener(clickHandler);
 });
+// chrome.contextMenus.removeAll();
+// chrome.contextMenus.create({
+//     id: 'editFolder',
+//     title: 'Edit Folder', // Displayed text for the context menu item
+//     contexts: ['link'], // Specify where the context menu should appear (e.g., selection, link, page)
+// });
+
+// chrome.contextMenus.onClicked.addListener((info, tab) => {
+
+//     // console.log(info);
+//     console.log(tab);
+//     // console.log('Edit folder clicked!');
+//     console.log('check');
+//     if ((info.menuItemId === 'editFolder') && (tab.status === 'complete')) {
+//       // Handle the edit action here (e.g., open an edit form)
+//       console.log('Edit folder clicked!');
+//       // You can also pass additional data from the context menu (e.g., folder ID)
+//       // info.selectionText contains the selected text (if any)
+//     }
+//     return;
+//   });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // if (message.action === 'addBookmark') {
@@ -27,6 +68,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log(message);
         const bookmarkToAdd = message.bookmark;
         let result = addBookmark(bookmarkToAdd);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
+    if (message.action === 'addFolder') {
+        console.log(message);
+        const folderToAdd = message.folder;
+        let result = addFolder(folderToAdd);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
+    if (message.action === 'updateFolder') {
+        console.log(message);
+        const folderToUpdate = message.folder;
+        const newFolderName = message.newName;
+        let result = updateFolder(folderToUpdate, newFolderName);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
@@ -200,7 +256,7 @@ async function addBookmark(newBookmark) {
         const response = await fetch("http://localhost:4000/api/bookmarks", {
             method: "POST",
             body: JSON.stringify(newBookmark),
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json'
             }
         });
@@ -214,6 +270,86 @@ async function addBookmark(newBookmark) {
             console.log("Bookmark added (message from background)", json);
             return json;
         }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function addFolder(newFolder) {
+    try {
+        const response = await fetch("http://localhost:4000/api/folders", {
+            method: "POST",
+            body: JSON.stringify(newFolder),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            console.log("Folder added (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function updateFolder(oldName, newName) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/folders/?name=${oldName}`);
+        console.log(response);
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            const json = await response.json();
+            console.log(json[0]);
+            // let folderToUpdate = json[0];
+            // folderToUpdate['name'] = newName;
+            // console.log(folderToUpdate);
+            const patchResponse = await fetch(`http://localhost:4000/api/folders/${json[0]._id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    name: newName,
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const patchJson = await patchResponse.json();
+
+            if (!response.ok) {
+                console.log(patchJson.error);
+                return patchJson.error;
+            }
+            if (response.ok) {
+                console.log("Folder updated (message from background)", patchJson);
+                return patchJson;
+            }
+        }
+        // const response = await fetch("http://localhost:4000/api/folders", {
+        //     method: "POST",
+        //     body: JSON.stringify(oldName),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // });
+        // const json = await response.json();
+
+        // if (!response.ok) {
+        //     console.log(json.error);
+        //     return json.error;
+        // }
+        // if (response.ok) {
+        //     console.log("Folder added (message from background)", json);
+        //     return json;
+        // }
     } catch (error) {
         console.error(error);
     }

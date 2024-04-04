@@ -9,6 +9,7 @@
 
 .single-folder:hover {
     background-color: #c3f6ff !important;
+    cursor: pointer;
 }
 
 .folder-details {

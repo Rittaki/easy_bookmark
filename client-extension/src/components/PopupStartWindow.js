@@ -10,15 +10,29 @@ import ChooseFolderLocationModal from './Modals/ChooseFolderLocationModal';
 import FoldersList from './Sidebar/FoldersList/FoldersList';
 import FoldersContainer from './MainContainer/FoldersContainer/FoldersContainer';
 import BookmarksContainer from './MainContainer/BookmarksContainer/BookmarksContainer';
+import DeleteFolderModal from './Modals/DeleteFolderModal';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
+    isFolderEdited: false,
     currentClickedLocationFolder: "main",
-    currentClickedFolder: "main",
+    currentClickedFolder: null,
+    currentFolderToLoad: "main",
     currentUrl: null, openModal: '', isAnotherFolder: false,
     lastBookmark: { title: '', url: '', folder: '' },
     lastFolder: { name: '', parentFolder: '', linksNumber: 0 }
   });
+  const [showDelete, setShowDelete] = useState(false);
+
+  const handleDeleteCloseModal = () => setShowDelete(false);
+  const handleDeleteShowModal = () => setShowDelete(true);
+
+  const handleDelete = () => {
+    const folderToDelete = state.currentClickedFolder;
+    console.log('Folder is: ' + folderToDelete);
+    console.log("Delete clicked");
+    handleDeleteShowModal();
+  };
 
   const handleClose = () => {
     setState((prevState) => ({ ...prevState, openModal: '' }));
@@ -30,7 +44,7 @@ function PopupStartWindow() {
       folder: "",
     };
     setState((prevState) => ({ ...prevState, lastBookmark: defaultBookmark }));
-    
+
     const defaultFolder = {
       name: "",
       parentFolder: "",
@@ -68,12 +82,14 @@ function PopupStartWindow() {
                 <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
 
               </li>
+              {/**<li className="nav-item">
+                <button type="button" className="btn btn-primary nav-button" onMouseDown={() => {console.log("Edit clicked"); setState((prevState) => ({ ...prevState, isFolderEditing: true }))}}>Edit</button>
+  </li>**/}
               <li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button">Edit</button>
+                <button type="button" className="btn btn-primary nav-button" onMouseDown={handleDelete}>Delete</button>
               </li>
-              <li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button">Delete</button>
-              </li>
+              <DeleteFolderModal show={showDelete} onHide={handleDeleteCloseModal}/>
+              
             </ul>
           </div>
         </div>
