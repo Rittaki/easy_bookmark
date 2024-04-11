@@ -25,12 +25,12 @@ function FolderItem(props) {
 
     return (
         <li className="mb-1 mt-1">
-            <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target={"#" + props.folder.name.split(" ").join("") + "-collapse"} aria-expanded="false" onClick={() => { setToLoad(true); updateCurrentFolder(props.folder.name);}}>
+            <button className="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target={"#" + props.folder.name.split(" ").join("") + "-collapse"} aria-expanded="false" onClick={() => { setToLoad(true); updateCurrentFolder(props.folder.name); }}>
                 {props.folder.name}
             </button>
             <ul className="list-unstyled ps-3 collapse" id={props.folder.name.split(" ").join("") + "-collapse"}>
                 {folders && folders.map((folder) => (
-                    <FolderItem key={folder._id} folder={folder} setState={props.setState} state={props.state}/>
+                    <FolderItem key={folder._id} folder={folder} setState={props.setState} state={props.state} />
                 ))}
             </ul>
         </li>

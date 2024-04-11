@@ -10,26 +10,38 @@ import ChooseFolderLocationModal from './Modals/ChooseFolderLocationModal';
 import FoldersList from './Sidebar/FoldersList/FoldersList';
 import FoldersContainer from './MainContainer/FoldersContainer/FoldersContainer';
 import BookmarksContainer from './MainContainer/BookmarksContainer/BookmarksContainer';
-import DeleteFolderModal from './Modals/DeleteFolderModal';
+import DeleteModal from './Modals/DeleteFolderModal';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
+    folderToDelete: null, bookmarkToDelete: null,
+    reloadAfterDelete: false,
     isFolderEdited: false,
     currentClickedLocationFolder: "main",
-    currentClickedFolder: null,
+    currentClickedFolder: null, currentClickedBookmark: null,
     currentFolderToLoad: "main",
     currentUrl: null, openModal: '', isAnotherFolder: false,
     lastBookmark: { title: '', url: '', folder: '' },
     lastFolder: { name: '', parentFolder: '', linksNumber: 0 }
   });
+  // const [folderToDelete, setFolderToDelete] = useState(null);
   const [showDelete, setShowDelete] = useState(false);
 
-  const handleDeleteCloseModal = () => setShowDelete(false);
+  const handleDeleteCloseModal = () => {
+    setShowDelete(false);
+    // setFolderToDelete(null);
+    setState((prevState) => ({ ...prevState, folderToDelete: null }));
+    setState((prevState) => ({ ...prevState, bookmarkToDelete: null }));
+  };
   const handleDeleteShowModal = () => setShowDelete(true);
 
   const handleDelete = () => {
-    const folderToDelete = state.currentClickedFolder;
-    console.log('Folder is: ' + folderToDelete);
+    const folder = state.currentClickedFolder;
+    const bookmark = state.currentClickedBookmark;
+    setState((prevState) => ({ ...prevState, folderToDelete: folder }));
+    setState((prevState) => ({ ...prevState, bookmarkToDelete: bookmark }));
+    console.log('Folder is: ' + state.folderToDelete);
+    console.log('Bookmark is: ' + state.bookmarkToDelete);
     console.log("Delete clicked");
     handleDeleteShowModal();
   };
@@ -82,14 +94,10 @@ function PopupStartWindow() {
                 <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
 
               </li>
-              {/**<li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button" onMouseDown={() => {console.log("Edit clicked"); setState((prevState) => ({ ...prevState, isFolderEditing: true }))}}>Edit</button>
-  </li>**/}
               <li className="nav-item">
                 <button type="button" className="btn btn-primary nav-button" onMouseDown={handleDelete}>Delete</button>
               </li>
-              <DeleteFolderModal show={showDelete} onHide={handleDeleteCloseModal}/>
-              
+              <DeleteModal show={showDelete} onHide={handleDeleteCloseModal} setState={setState} state={state} />
             </ul>
           </div>
         </div>

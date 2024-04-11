@@ -9,6 +9,9 @@ function FoldersContainer(props) {
     const handleFolderDoubleClick = () => {
         // Load new folder logic here
         console.log('Double-clicked on folder!');
+        // props.setFolderToDelete(null);
+        props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
+        props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
     };
 
     // useEffect(() => {
@@ -26,7 +29,7 @@ function FoldersContainer(props) {
                 setToLoad(false);
             };
         });
-    }, [props.state.currentFolderToLoad, toLoad]);
+    }, [props.state.currentFolderToLoad, toLoad, props.state.reloadAfterDelete]);
 
     return (
         <div className="folders-container-right row row-cols-3">

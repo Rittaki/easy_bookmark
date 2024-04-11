@@ -6,3 +6,12 @@
     width: 150px;
     margin: 0px;
 }
+
+.single-bookmark:hover {
+    background-color: #f8feff !important;
+    cursor: pointer;
+}
+
+.highlighted-bookmark {
+    background-color: #f8feff !important;
+}

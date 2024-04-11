@@ -31,7 +31,7 @@ function FolderLocationNavItem(props) {
             </button>
             <ul className="list-unstyled ps-3 collapse" id={"location-" + props.folder.name.split(" ").join("") + "-collapse"}>
                 {folders && folders.map((folder) => (
-                    <FolderLocationNavItem key={folder._id} folder={folder}/>
+                    <FolderLocationNavItem key={folder._id} folder={folder} setState={props.setState} state={props.state}/>
                 ))}
             </ul>
         </li>

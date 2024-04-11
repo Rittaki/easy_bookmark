@@ -14,7 +14,7 @@ function BookmarksContainer(props) {
                 setBookmarks(response.success);
             };
         });
-    }, [props.state.currentFolderToLoad]);
+    }, [props.state.currentFolderToLoad, props.state.reloadAfterDelete]);
 
     return (
         <div className="links-container">

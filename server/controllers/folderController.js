@@ -49,18 +49,56 @@ const createFolder = async (req, res) => {
     };
 };
 
+const deleteFolderAndDescendants = async (res, folderId) => {
+    try {
+        console.log('inside deleteFolderAndDescendants');
+        if (!mongoose.Types.ObjectId.isValid(folderId)) {
+            return res.status(404).json({ error: 'ID not found' });
+        };
+
+        const folder = await Folder.findById(folderId);
+        if (!folder) {
+            return res.status(404).json({ error: 'Folder not found' });
+        }
+
+        // delete bookmarks inside
+        const bookmarks = await Bookmark.find({ folder: folder.name });
+        console.log("bookmarks found:", bookmarks);
+        const bookmarksDeleteRes = await Bookmark.deleteMany({ folder: folder.name });
+        if (!bookmarksDeleteRes) {
+            console.log(bookmarksDeleteRes);
+            return res.status(404).json({ error: bookmarksDeleteRes });
+        }
+        else {
+            console.log("Deleted Bookmarks:", bookmarksDeleteRes);
+        }
+
+        // delete folders (recurcively)
+        const folders = await Folder.find({ parentFolder: folder.name });
+        console.log("folders found:", folders);
+        for (const childFolder of folders) {
+            await deleteFolderAndDescendants(res, childFolder._id); 
+        }
+        const folderDeleteRes = await Folder.findByIdAndDelete(folder._id);
+        if (!folderDeleteRes) {
+            console.log(folderDeleteRes);
+            return res.status(404).json({ error: `Can't delete a folder ${folder.name}` });
+        }
+        else {
+            console.log("Deleted folder:", folderDeleteRes);
+        }
+        return folder;
+    }
+    catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 // delete a folder
 const deleteFolder = async (req, res) => {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'Folder not found' });
-    };
-
-    const folder = await Folder.findOneAndDelete({ _id: id });
-    if (!folder) {
-        return res.status(404).json({ error: 'Folder not found' });
-    }
-
+    const folder = await deleteFolderAndDescendants(res, id);
+    console.log('deleteFolder called');
+    console.log('folder returnes is:', folder);
     res.status(200).json(folder);
 };
 
@@ -80,12 +118,12 @@ const updateFolder = async (req, res) => {
     }
     console.log("Old folder name from controller:", oldFolder.name);
     // bookmarks update part
-    const bookmarks = await Bookmark.find({folder: oldFolder.name});
+    const bookmarks = await Bookmark.find({ folder: oldFolder.name });
     console.log(bookmarks);
     const bookmarksUpdateRes = await Bookmark.updateMany({ folder: oldFolder.name }, { folder: folderName });
     if (!bookmarksUpdateRes) {
         console.log(bookmarksUpdateRes);
-        return res.status(404).json({error: bookmarksUpdateRes});
+        return res.status(404).json({ error: bookmarksUpdateRes });
     }
     else {
         console.log("Updated Bookmarks:", bookmarksUpdateRes);
@@ -97,7 +135,7 @@ const updateFolder = async (req, res) => {
 
     if (!foldersUpdateRes) {
         console.log(foldersUpdateRes);
-        return res.status(404).json({error: foldersUpdateRes});
+        return res.status(404).json({ error: foldersUpdateRes });
     }
     else {
         console.log("Updated Folders:", bookmarksUpdateRes);

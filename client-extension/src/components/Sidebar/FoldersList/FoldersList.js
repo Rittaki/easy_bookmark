@@ -16,7 +16,7 @@ function FoldersList(props) {
                 props.setState((prevState) => ({ ...prevState, isFolderEdited: false }))
             };
         });
-    }, [props.state.isFolderEdited]);
+    }, [props.state.isFolderEdited, props.state.reloadAfterDelete]);
 
     return (
         <aside id="sidebar" className="sidebar">

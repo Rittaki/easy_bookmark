@@ -90,6 +90,8 @@ function SingleFolder(props) { // implement edit and delete for single folder be
             // Handle double click (e.g., load new folder)
             // setToLoad(true);
             updateCurrentFolderToLoad(props.folder.name);
+            props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
+            props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
             timer = setTimeout(props.onDoubleClick, 200);
         }
     };
@@ -98,7 +100,7 @@ function SingleFolder(props) { // implement edit and delete for single folder be
         <div className={`mt-2 me-2 card text-center single-folder ${isClicked ? 'highlighted' : ''}`} >
 
             <div className="flex flex-col flex-1 justify-between p-2">
-                <div tabIndex={0} className="clickable" onMouseDown={onClickHandler} onBlur={handleBlur}>
+                <div tabIndex={0} className="clickable" onClick={onClickHandler} onBlur={handleBlur}>
                     <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
                 </div>
                 <section className="folder-details">
