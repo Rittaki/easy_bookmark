@@ -28,16 +28,13 @@ function SingleBookmark(props) {
         // Handle single click (e.g., highlight bookmark)
     };
 
-    const handleOnContextMenu = (e, bookmarkUrl) => {
-        e.preventDefault(); // prevent the default behaviour when right clicked
-        console.log("Right Click", bookmarkUrl);
-    };
-
     return (
         <div
-            onContextMenu={(e) => { handleOnContextMenu(e, props.bookmark.url) }}
+            onContextMenu={(e) => { props.handleOnContextMenu(e, props.bookmark, "bookmark") }}
             tabIndex={0}
-            className={`mt-1 list-group-item d-flex justify-content-between align-items-center single-bookmark ${isClicked ? 'highlighted-bookmark' : ''}`}
+            className={`mt-1 list-group-item d-flex justify-content-between align-items-center single-bookmark
+            ${isClicked ? 'highlighted-bookmark' : ''}
+            ${props.bookmark.selected ? 'selected' : ''}`}
             onClick={onClickHandler}
             onBlur={handleBlur}>
             <p className="bookmark-title text-truncate">{props.bookmark.title}</p>

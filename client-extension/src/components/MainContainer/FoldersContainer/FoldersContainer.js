@@ -29,13 +29,13 @@ function FoldersContainer(props) {
                 setToLoad(false);
             };
         });
-    }, [props.state.currentFolderToLoad, toLoad, props.state.reloadAfterDelete]);
+    }, [props.state.currentFolderToLoad, toLoad, props.state.reloadAfterAction]);
 
     return (
         <div className="folders-container-right row row-cols-3">
             {folders && folders.map((folder) => (
                 <SingleFolder key={folder._id} folder={folder} setFolders={setFolders} setState={props.setState} state={props.state}
-                    onDoubleClick={handleFolderDoubleClick} setToLoad={setToLoad}/>
+                    onDoubleClick={handleFolderDoubleClick} setToLoad={setToLoad} handleOnContextMenu={props.handleOnContextMenu} />
             ))}
         </div>
     );

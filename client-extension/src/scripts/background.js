@@ -40,6 +40,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         result.then(res => sendResponse({ success: res }));
         return true;
     }
+    if (message.action === 'updateBookmark') {
+        console.log(message);
+        const bookmarkToUpdate = message.bookmark;
+        const newBookmarkTitle = message.newTitle;
+        const newBookmarkUrl = message.newUrl;
+        let result = updateBookmark(bookmarkToUpdate, newBookmarkTitle, newBookmarkUrl);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
     if (message.action === 'deleteBookmark') {
         console.log(message);
         const bookmarkToDelete = message.bookmark;
@@ -121,6 +130,44 @@ async function addBookmark(newBookmark) {
             console.log("Bookmark added (message from background)", json);
             return json;
         }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function updateBookmark(oldUrl, newTitle, newUrl) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/bookmarks/?url=${oldUrl}`);
+        console.log(response);
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            const json = await response.json();
+            console.log(json[0]);
+            const patchResponse = await fetch(`http://localhost:4000/api/bookmarks/${json[0]._id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    title: newTitle,
+                    url: newUrl
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const patchJson = await patchResponse.json();
+
+            if (!response.ok) {
+                console.log(patchJson.error);
+                return patchJson.error;
+            }
+            if (response.ok) {
+                console.log("Folder updated (message from background)", patchJson);
+                return patchJson;
+            }
+        }
+ 
     } catch (error) {
         console.error(error);
     }

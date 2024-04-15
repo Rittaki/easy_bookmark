@@ -14,13 +14,13 @@ function BookmarksContainer(props) {
                 setBookmarks(response.success);
             };
         });
-    }, [props.state.currentFolderToLoad, props.state.reloadAfterDelete]);
+    }, [props.state.currentFolderToLoad, props.state.reloadAfterAction]);
 
     return (
         <div className="links-container">
-            <div className="list-group list-group-flush">                
+            <div className="list-group list-group-flush">
                 {bookmarks && bookmarks.map((bookmark) => (
-                    <SingleBookmark key={bookmark._id} bookmark={bookmark} setBookmarks={setBookmarks} setState={props.setState} state={props.state}/>
+                    <SingleBookmark handleOnContextMenu={props.handleOnContextMenu} key={bookmark._id} bookmark={bookmark} setBookmarks={setBookmarks} setState={props.setState} state={props.state} />
                 ))}
             </div>
         </div>
