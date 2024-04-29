@@ -5,6 +5,7 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const bookmarksRoutes = require('./routes/bookmarks');
 const foldersRoutes = require('./routes/folders');
+const chatgptRoutes = require('./routes/chatgpt');
 
 // express app
 const app = express();
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 // routes
 app.use('/api/bookmarks', bookmarksRoutes);
 app.use('/api/folders', foldersRoutes);
+app.use('/api/chatgpt', chatgptRoutes);
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
