@@ -45,7 +45,7 @@ function ChooseFolderNameModal(props) {
             </Modal.Header>
 
             <Modal.Body>
-                <p>Please choose the most suitable folder</p>
+                <p>Please choose the most suitable folder name</p>
                 <div className="folders-container">
                     <div className="bookmark-folder">
                         <div className="flex flex-col flex-1 justify-between p-4">

@@ -1,0 +1,40 @@
+.title-item {
+    display: flex !important;
+    align-items: center;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+#otherInput {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: gray;
+    opacity: 75%;
+    outline: none;
+}
+
+#otherInput::placeholder {
+    opacity: 50%;
+}
+
+.new-title {
+    height: 60px;
+    width: 400px;
+}
+
+.text-truncate {
+    width: inherit;
+}
+
+input[type="radio"] {
+    box-shadow: none !important;
+}
