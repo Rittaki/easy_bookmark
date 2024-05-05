@@ -42,12 +42,13 @@ function ChooseFolderModal(props) {
                         <div className="flex flex-col flex-1 justify-between p-4">
                             <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
                             <section >
-                                <h6 >Choose/create another folder...</h6>
+                                <h6 className='opacity-50'>Create new folder...</h6>
                                 <Button variant="info" onClick={() => { updateOpenModal('choose-folder-name-modal') }}>Click</Button>
                             </section>
                         </div>
                     </div>
                 </div>
+                <p>Want to choose another existing folder? Click <span className='fw-semibold'>here</span></p>
             </Modal.Body>
 
             <Modal.Footer>

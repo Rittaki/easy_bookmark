@@ -6,7 +6,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { useState, useEffect } from 'react';
 
 function ChooseBookmarkNameModal(props) {
-    const [chosedTitle, setChosedTitle] = useState("");
+    const [chosenTitle, setChosenTitle] = useState("");
     const [titles, setTitles] = useState([]);
     const [toSave, setToSave] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -39,12 +39,12 @@ function ChooseBookmarkNameModal(props) {
     const handleInputChange = (e) => {
         console.log(e.target.value);
         setInputValue(e.target.value);
-        setChosedTitle(e.target.value);
+        setChosenTitle(e.target.value);
     };
 
     const handleChange = (e) => {
         console.log(e.target.value);
-        setChosedTitle(e.target.value);
+        setChosenTitle(e.target.value);
     };
 
     const handleFolderSave = (e) => {
@@ -109,6 +109,7 @@ function ChooseBookmarkNameModal(props) {
                 setInputValue("");
                 props.onHide();
                 setTitles([]);
+                setOtherSelected(false);
             }
         };
         handleSave();
@@ -129,6 +130,7 @@ function ChooseBookmarkNameModal(props) {
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
         setInputValue("");
+        setOtherSelected(false);
         // updateBookmarkObject(inputValue);
     };
 
@@ -136,6 +138,7 @@ function ChooseBookmarkNameModal(props) {
         props.onHide();
         setTitles([]);
         setInputValue("");
+        setOtherSelected(false);
     };
 
     return (
@@ -206,7 +209,7 @@ function ChooseBookmarkNameModal(props) {
                     (props.state.isAnotherFolder) ? updateOpenModal('choose-folder-location-modal')
                         : updateOpenModal('choose-folder-modal')
                 }}>Back</Button>
-                <Button variant="success" onClick={() => { updateBookmarkObject(chosedTitle); }}>Save</Button>
+                <Button variant="success" onClick={() => { updateBookmarkObject(chosenTitle); }}>Save</Button>
             </Modal.Footer>
 
         </Modal>

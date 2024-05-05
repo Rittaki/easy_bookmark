@@ -1,14 +1,47 @@
-import './ChooseFolderModal.css';
+import './ChooseFolderNameModal.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function ChooseFolderNameModal(props) {
-
+    const [chosenFolderName, setChosenFolderName] = useState("");
+    const [folderNames, setFolderNames] = useState([]);
     const [inputValue, setInputValue] = useState("");
+    const [error, setError] = useState(null); // handle error later, after handling set to null again
+
+    // handle otherInput 
+    const [otherSelected, setOtherSelected] = useState(false);
+
+    useEffect(() => {
+        if (props.show && (!folderNames.length)) {
+            // if array of names is empty, fetch, if not - not fetch. Make array empty when onHide and when save
+            console.log("inside 'useEffect' method in choose folder name modal", props.show, "names are empty:", folderNames);
+            setFolderNames(["First", "Second", "Third"]);
+            // chrome.runtime.sendMessage({
+            //     action: "generateFolders",
+            //     url: props.state.lastBookmark.url
+            // }, (response) => {
+            //     if (response.success) {
+            //         console.log('Folders fetched (message from client)', response);
+            //         setFolderNames(response.success.folder_names);
+            //         setError(null);
+            //     }
+            //     else {
+            //         setError(json.error);
+            //     };
+            // });
+        }
+    }, [props.show]);
 
     const handleInputChange = (e) => {
+        console.log(e.target.value);
         setInputValue(e.target.value);
+        setChosenFolderName(e.target.value);
+    };
+
+    const handleChange = (e) => {
+        console.log(e.target.value);
+        setChosenFolderName(e.target.value);
     };
 
     const updateFolderObject = (newFolder) => {
@@ -32,13 +65,22 @@ function ChooseFolderNameModal(props) {
 
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
-        updateBookmarkObject(inputValue);
-        updateFolderObject(inputValue);
+        updateBookmarkObject(chosenFolderName);
+        updateFolderObject(chosenFolderName);
+        setInputValue("");
+        setOtherSelected(false);
+    };
+
+    const closeModal = () => {
+        props.onHide();
+        setFolderNames([]);
+        setInputValue("");
+        setOtherSelected(false);
     };
 
     return (
 
-        <Modal className="modal-window" show={props.show} onHide={props.onHide}>
+        <Modal className="modal-window" show={props.show} onHide={closeModal}>
 
             <Modal.Header closeButton>
                 <Modal.Title>How do you want to name a folder?</Modal.Title>
@@ -46,50 +88,62 @@ function ChooseFolderNameModal(props) {
 
             <Modal.Body>
                 <p>Please choose the most suitable folder name</p>
-                <div className="folders-container">
-                    <div className="bookmark-folder">
-                        <div className="flex flex-col flex-1 justify-between p-4">
-                            <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                            <section >
-                                <h6 >Drinks</h6>
-                            </section>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" />
-                                <label className="form-check-label" htmlFor="flexRadioDefault1" />
-                            </div>
-                        </div>
+                {
+                    folderNames.length ?
+                        <div className="folders-container">
+                            {folderNames.length && folderNames.map((folderName, index) => (
+                                <div key={index} className="bookmark-folder">
+                                    <label className="form-check-label" htmlFor={`folderGroupRadioGrid${index}`} onClick={() => setOtherSelected(false)}>
+                                        <div className="flex flex-col flex-1 justify-between new-folder p-2">
+                                            <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
+                                            <section >
+                                                <strong className="fw-semibold text-truncate d-inline-block" style={{ maxWidth: '100%' }}>{folderName}</strong>
 
-                    </div>
-                    <div className="bookmark-folder">
-                        <div className="flex flex-col flex-1 justify-between p-4">
-                            <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                            <section >
-                                <h6 >Pattisserie</h6>
-                            </section>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
-                                <label className="form-check-label" htmlFor="flexRadioDefault2" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bookmark-folder">
-                        <div className="flex flex-col flex-1 justify-between p-4">
-                            <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                            <section>
-                                <div className="input-group mb-3">
-                                    <input type="text" className="form-control"
-                                        value={inputValue}
-                                        onChange={handleInputChange}
-                                        placeholder="Type here your option" />
+                                            </section>
+                                            <input className="form-check-input" type="radio" name="folderGroupRadioGrid"
+                                                id={`folderGroupRadioGrid${index}`}
+                                                value={folderName} defaultChecked=""
+                                                onChange={handleChange} />
+                                        </div>
+                                    </label>
                                 </div>
-                            </section>
-                            <div className="form-check">
-                                <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" />
-                                <label className="form-check-label" htmlFor="flexRadioDefault3" />
+                            ))}
+
+                            <div className="bookmark-folder">
+                                <label className="form-check-label" htmlFor='folderGroupRadioGrid4' onClick={() => setOtherSelected(true)}>
+                                    <div className="flex flex-col flex-1 justify-between new-folder p-2">
+                                        <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
+                                        <section style={{ height: "30px" }}>
+                                            {otherSelected ?
+                                                <div className="input-group">
+                                                    <input type="text" className="fw-semibold text-truncate d-inline-block"
+                                                        id="otherInput"
+                                                        value={inputValue}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Type here your option" />
+                                                </div>
+                                                : <strong className="fw-semibold opacity-25 text-truncate d-inline-block"
+                                                    style={{ maxWidth: '100%' }}>
+                                                    {inputValue ? `${inputValue}` : "Double-click to enter your option"}
+                                                </strong>}
+                                        </section>
+                                        <input className="form-check-input" type="radio" name="folderGroupRadioGrid"
+                                            id="folderGroupRadioGrid4"
+                                            value={inputValue} defaultChecked=""
+                                            onChange={handleChange} />
+                                    </div>
+                                </label>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        :
+                        <div className="d-flex justify-content-center">
+                            <div className="spinner-grow"
+                                style={{ width: '70px', height: '70px', color: '#c0edf4' }}
+                                role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                }
             </Modal.Body>
 
             <Modal.Footer>

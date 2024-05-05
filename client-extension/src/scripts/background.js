@@ -85,6 +85,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         result.then(res => sendResponse({ success: res }));
         return true;
     }
+    if (message.action === 'generateFolders') {
+        console.log(message);
+        const url = message.url;
+        let result = generateFolders(url);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
 });
 
 // CRUD Operations
@@ -339,6 +346,30 @@ async function generateTitles(url) {
         }
         if (response.ok) {
             console.log("Titles generated (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function generateFolders(url) {
+    try {
+        const response = await fetch("http://localhost:4000/api/chatgpt/generate_folder", {
+            method: "POST",
+            body: JSON.stringify({ url }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            console.log("Folders generated (message from background)", json);
             return json;
         }
     } catch (error) {
