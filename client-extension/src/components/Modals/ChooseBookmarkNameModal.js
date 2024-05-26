@@ -124,13 +124,14 @@ function ChooseBookmarkNameModal(props) {
             // timestamp: Date().toString()
         };
         props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }));
-        setToSave(true);
+        // setToSave(true);
     };
 
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
-        setInputValue("");
-        setOtherSelected(false);
+        updateBookmarkObject(chosenTitle);
+        // setInputValue("");
+        // setOtherSelected(false);
         // updateBookmarkObject(inputValue);
     };
 
@@ -158,7 +159,7 @@ function ChooseBookmarkNameModal(props) {
                                     <div key={index} className="form-check title-item">
                                         <input className="form-check-input" type="radio" name="listGroupRadioGrid"
                                             id={`listGroupRadioGrid${index}`}
-                                            value={title} defaultChecked=""
+                                            value={title} defaultChecked={title === chosenTitle ? true : false}
                                             onChange={handleChange} />
                                         <label className="list-group-item py-3 px-3 ms-3 new-title" htmlFor={`listGroupRadioGrid${index}`} onClick={() => setOtherSelected(false)}>
                                             <strong className="fw-semibold text-truncate d-inline-block" style={{ maxWidth: '100%' }}>{title}</strong>
@@ -173,6 +174,7 @@ function ChooseBookmarkNameModal(props) {
                                     <input className="form-check-input" type="radio" name="listGroupRadioGrid"
                                         id="listGroupRadioGrid4"
                                         onChange={handleChange}
+                                        defaultChecked={otherSelected}
                                         value={inputValue} />
                                     <label className="list-group-item py-3 px-3 ms-3 new-title" htmlFor="listGroupRadioGrid4" onClick={(e) => { setOtherSelected(true) }}>
 
@@ -206,10 +208,10 @@ function ChooseBookmarkNameModal(props) {
 
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => {
-                    (props.state.isAnotherFolder) ? updateOpenModal('choose-folder-location-modal')
+                    (props.state.isAnotherFolder || props.state.chooseExistingFolder) ? updateOpenModal('choose-folder-location-modal')
                         : updateOpenModal('choose-folder-modal')
                 }}>Back</Button>
-                <Button variant="success" onClick={() => { updateBookmarkObject(chosenTitle); }}>Save</Button>
+                <Button variant="success" onClick={() => { updateBookmarkObject(chosenTitle); setToSave(true); }}>Save</Button>
             </Modal.Footer>
 
         </Modal>

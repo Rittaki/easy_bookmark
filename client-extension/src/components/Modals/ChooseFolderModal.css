@@ -1,8 +1,18 @@
 
 .folders-container {
     display: inline-flex;
+    justify-content: space-evenly;
 }
 
 .bookmark-folder {
     width: min-content;
+}
+
+.another-folder-button {
+    border: none;
+    background-color: white;
+}
+
+.another-folder-button:hover {
+    background-color: #f0f0f0;
 }

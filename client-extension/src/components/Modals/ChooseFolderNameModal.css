@@ -1,4 +1,7 @@
 .new-folder {
     width: 115px !important;
     height: 155px !important;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
 }

@@ -1,0 +1,26 @@
+.bookmark-url {
+    width: 250px;
+}
+
+.bookmark-title {
+    width: 150px;
+    margin: 0px;
+}
+
+.search-bookmark:hover {
+    background-color: #f8feff !important;
+    cursor: pointer;
+}
+
+.folder-link-icon:hover {
+    cursor: pointer;
+}
+
+.folder-link-icon::before {
+    position: absolute;
+}
+
+.folder-link-icon {
+    width: 20px;
+    height: 20px;
+}

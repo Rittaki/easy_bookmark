@@ -15,6 +15,15 @@ function ChooseFolderLocationModal(props) {
         props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }))
     };
 
+    const updateBookmarkObject = (newFolder) => {
+        const currentBookmark = props.state.lastBookmark;
+        const updatedBookmark = {
+            ...currentBookmark,
+            folder: newFolder,
+        };
+        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
+    };
+
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
     }
@@ -32,10 +41,19 @@ function ChooseFolderLocationModal(props) {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => { updateOpenModal('choose-folder-name-modal') }}>Back</Button>
+                <Button variant="secondary" onClick={() => {
+                    props.state.chooseExistingFolder ? updateOpenModal('choose-folder-modal') : updateOpenModal('choose-folder-name-modal');
+                }}>Back</Button>
                 <Button variant="success" onClick={() => {
-                    props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: true }));
-                    updateFolderObject(props.state.currentClickedLocationFolder);
+                    if (props.state.chooseExistingFolder) {
+                        props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: false }));
+                        updateBookmarkObject(props.state.currentClickedLocationFolder)
+                    } else {
+                        props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: true }));
+                        updateFolderObject(props.state.currentClickedLocationFolder)
+                    }
+                    // props.state.chooseExistingFolder ? updateBookmarkObject(props.state.currentClickedLocationFolder) : updateFolderObject(props.state.currentClickedLocationFolder);
+                    // updateFolderObject(props.state.currentClickedLocationFolder);
                 }}>Next</Button>
             </Modal.Footer>
 

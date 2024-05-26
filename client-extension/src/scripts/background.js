@@ -92,6 +92,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         result.then(res => sendResponse({ success: res }));
         return true;
     }
+    if (message.action === 'suggestFolders') {
+        console.log(message);
+        const url = message.url;
+        let result = suggestFolders(url);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
+    if (message.action === 'searchBookmarks') {
+        console.log(message);
+        const query = message.query;
+        let result = searchBookmarks(query);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
 });
 
 // CRUD Operations
@@ -124,6 +138,20 @@ async function fetchBookmarks(folder) {
         console.error(error);
     }
 };
+
+async function searchBookmarks(query) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/bookmarks/search?searchTerm=${query}`);
+        console.log(response);
+        if (response.ok) {
+            const json = await response.json();
+            console.log("Search results bookmarks (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function addBookmark(newBookmark) {
     try {
@@ -370,6 +398,30 @@ async function generateFolders(url) {
         }
         if (response.ok) {
             console.log("Folders generated (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function suggestFolders(url) {
+    try {
+        const response = await fetch("http://localhost:4000/api/chatgpt/suggest_folder", {
+            method: "POST",
+            body: JSON.stringify({ url }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            console.log("Folders suggested (message from background)", json);
             return json;
         }
     } catch (error) {

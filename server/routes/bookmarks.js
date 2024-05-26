@@ -4,10 +4,14 @@ const {
     getBookmarks,
     createBookmark,
     deleteBookmark,
-    updateBookmark
+    updateBookmark,
+    searchBookmarks
  } = require('../controllers/bookmarkController');
 
 const router = express.Router();
+
+// SEARCH a bookmark
+router.get('/search', searchBookmarks);
 
 // GET all bookmarks
 router.get('/', getBookmarks);
@@ -23,5 +27,8 @@ router.delete('/:id', deleteBookmark);
 
 // UPDATE a bookmark
 router.patch('/:id', updateBookmark);
+
+// // SEARCH a bookmark
+// router.get('/search', searchBookmarks);
 
 module.exports = router;

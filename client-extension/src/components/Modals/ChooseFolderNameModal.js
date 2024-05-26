@@ -51,7 +51,7 @@ function ChooseFolderNameModal(props) {
             name: newFolder,
         };
         props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }));
-        setInputValue("");
+        // setInputValue("");
     };
 
     const updateBookmarkObject = (newFolder) => {
@@ -67,8 +67,8 @@ function ChooseFolderNameModal(props) {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
         updateBookmarkObject(chosenFolderName);
         updateFolderObject(chosenFolderName);
-        setInputValue("");
-        setOtherSelected(false);
+        // setInputValue("");
+        // setOtherSelected(false);
     };
 
     const closeModal = () => {
@@ -102,7 +102,7 @@ function ChooseFolderNameModal(props) {
                                             </section>
                                             <input className="form-check-input" type="radio" name="folderGroupRadioGrid"
                                                 id={`folderGroupRadioGrid${index}`}
-                                                value={folderName} defaultChecked=""
+                                                value={folderName} defaultChecked={folderName === chosenFolderName ? true : false}
                                                 onChange={handleChange} />
                                         </div>
                                     </label>
@@ -113,7 +113,7 @@ function ChooseFolderNameModal(props) {
                                 <label className="form-check-label" htmlFor='folderGroupRadioGrid4' onClick={() => setOtherSelected(true)}>
                                     <div className="flex flex-col flex-1 justify-between new-folder p-2">
                                         <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                                        <section style={{ height: "30px" }}>
+                                        <section style={{ height: "30px", maxWidth: '100%' }}>
                                             {otherSelected ?
                                                 <div className="input-group">
                                                     <input type="text" className="fw-semibold text-truncate d-inline-block"
@@ -129,7 +129,7 @@ function ChooseFolderNameModal(props) {
                                         </section>
                                         <input className="form-check-input" type="radio" name="folderGroupRadioGrid"
                                             id="folderGroupRadioGrid4"
-                                            value={inputValue} defaultChecked=""
+                                            value={inputValue} defaultChecked={otherSelected}
                                             onChange={handleChange} />
                                     </div>
                                 </label>

@@ -11,9 +11,12 @@ import BookmarksContainer from './MainContainer/BookmarksContainer/BookmarksCont
 import DeleteModal from './Modals/DeleteModal';
 import EditModal from './Modals/EditModal';
 import ContextMenu from './ContextMenu/ContextMenu';
+import SearchResultsContainer from './MainContainer/SearchResultsContainer/SearchResultsContainer';
+import SearchBar from './MainContainer/SearchBar/SearchBar';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
+    chooseExistingFolder: false,
     folderToDelete: null, bookmarkToDelete: null,
     folderToEdit: null, bookmarkToEdit: { title: "", url: "" },
     reloadAfterAction: false,
@@ -25,6 +28,12 @@ function PopupStartWindow() {
     lastBookmark: { title: '', url: '', folder: '' },
     lastFolder: { name: '', parentFolder: '', linksNumber: 0 }
   });
+
+  // search functionality
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
+  // maybe add here the states for chat-gpt generated objects
 
   const [currentBookmark, setCurrentBookmark] = useState({ id: "", title: "", url: "" });
 
@@ -128,7 +137,9 @@ function PopupStartWindow() {
   // Other logic
   const handleClose = () => {
     setState((prevState) => ({ ...prevState, openModal: '' }));
+    console.log("I'm from original close function");
     setState((prevState) => ({ ...prevState, currentClickedLocationFolder: 'main' }));
+    setState((prevState) => ({ ...prevState, chooseExistingFolder: false }));
 
     const defaultBookmark = {
       title: "",
@@ -185,39 +196,41 @@ function PopupStartWindow() {
       </div>
       <div className="col-8 right-side">
         <div className="container">
-          <div className="row search-row">
-            <form role="search">
-              <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-            </form>
-          </div>
-          <div className="row folders-row ">
 
-            <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
-            <BookmarksContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
-            <ContextMenu
-              contextMenuRef={contextMenuRef}
-              isToggled={contextMenu.toggled}
-              positionX={contextMenu.position.x}
-              positionY={contextMenu.position.y}
-              buttons={[
-                {
-                  text: 'Edit',
-                  onClick: () => handleEdit()
-                },
-                {
-                  text: 'Delete',
-                  onClick: () => handleDelete()
-                },
-                {
-                  text: 'Details',
-                  onClick: () => console.log('Details')
-                }
-              ]}
-            />
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults} />
 
-            <EditModal show={showEdit} onHide={handleEditCloseModal} setState={setState} state={state} />
-            <DeleteModal show={showDelete} onHide={handleDeleteCloseModal} setState={setState} state={state} />
-          </div>
+          {searchTerm ?
+            <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults} setState={setState} state={state}/>
+            :
+            <div className="row folders-row ">
+
+              <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
+              <BookmarksContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
+              <ContextMenu
+                contextMenuRef={contextMenuRef}
+                isToggled={contextMenu.toggled}
+                positionX={contextMenu.position.x}
+                positionY={contextMenu.position.y}
+                buttons={[
+                  {
+                    text: 'Edit',
+                    onClick: () => handleEdit()
+                  },
+                  {
+                    text: 'Delete',
+                    onClick: () => handleDelete()
+                  },
+                  {
+                    text: 'Details',
+                    onClick: () => console.log('Details')
+                  }
+                ]}
+              />
+
+              <EditModal show={showEdit} onHide={handleEditCloseModal} setState={setState} state={state} />
+              <DeleteModal show={showDelete} onHide={handleDeleteCloseModal} setState={setState} state={state} />
+            </div>
+          }
         </div>
       </div>
     </div>
