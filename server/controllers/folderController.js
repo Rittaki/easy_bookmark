@@ -2,6 +2,18 @@ const Folder = require('../models/Folder');
 const Bookmark = require('../models/Bookmark');
 const mongoose = require('mongoose');
 
+const func = async () => {
+    // const res = await Bookmark.updateMany(
+    //     { folder: "Recipes" },
+    //     {
+    //         $set: { path: "Home/Recipes" },
+    //     },
+    //     { multi: true }
+    // );
+    // console.log(res);
+};
+// func();
+
 // get all folders
 const getFolders = async (req, res) => {
     const reqQuery = req.query;
@@ -38,11 +50,11 @@ const getFolder = async (req, res) => {
 
 // create new folder
 const createFolder = async (req, res) => {
-    const { name, parentFolder, linksNumber } = req.body;
+    const { name, parentFolder, linksNumber, path } = req.body;
 
     // add doc to db
     try {
-        const folder = await Folder.create({ name, parentFolder, linksNumber });
+        const folder = await Folder.create({ name, parentFolder, linksNumber, path });
         res.status(200).json(folder);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -77,7 +89,7 @@ const deleteFolderAndDescendants = async (res, folderId) => {
         const folders = await Folder.find({ parentFolder: folder.name });
         console.log("folders found:", folders);
         for (const childFolder of folders) {
-            await deleteFolderAndDescendants(res, childFolder._id); 
+            await deleteFolderAndDescendants(res, childFolder._id);
         }
         const folderDeleteRes = await Folder.findByIdAndDelete(folder._id);
         if (!folderDeleteRes) {

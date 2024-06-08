@@ -10,6 +10,12 @@ function SingleFolder(props) {
         props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
     };
 
+    const updateCrumbs = (newCrumbs) => {
+        const crumbs = newCrumbs.split('/').filter((crumb) => crumb !== '');
+        console.log('Crumbs:', crumbs);
+        props.setCrumbs(crumbs);
+    }
+
     // useEffect(() => {
     //     if (toLoad) {
     //         chrome.runtime.sendMessage({
@@ -47,6 +53,7 @@ function SingleFolder(props) {
             // Handle double click (e.g., load new folder)
             // setToLoad(true);
             updateCurrentFolderToLoad(props.folder.name);
+            updateCrumbs(props.folder.path);
             props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
             props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
             timer = setTimeout(props.onDoubleClick, 200);

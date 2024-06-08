@@ -29,11 +29,11 @@ const getBookmark = async (req, res) => {
 
 // create new bookmark
 const createBookmark = async (req, res) => {
-    const { title, url, folder } = req.body;
+    const { title, url, folder, path } = req.body;
 
     // add doc to db
     try {
-        const bookmark = await Bookmark.create({ title, url, folder });
+        const bookmark = await Bookmark.create({ title, url, folder, path });
         res.status(200).json(bookmark);
     } catch (error) {
         res.status(400).json({ error: error.message });

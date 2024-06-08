@@ -14,6 +14,10 @@ const bookmarkSchema = new Schema({
     folder: {
         type: String,
         required: true
+    },
+    path: {
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 

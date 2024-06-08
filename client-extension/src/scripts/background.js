@@ -19,6 +19,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'getFolderByName') {
+        console.log(message);
+        const name = message.folderName;
+        let result = fetchFolderByName(name);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
     if (message.action === 'getFolders') {
         console.log(message);
         const parentFolder = message.folder;
@@ -114,6 +121,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function fetchFolders(parentFolder) {
     try {
         const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${parentFolder}`);
+        console.log(response);
+        if (response.ok) {
+            const json = await response.json();
+            console.log(json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function fetchFolderByName(name) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/folders/?name=${name}`);
         console.log(response);
         if (response.ok) {
             const json = await response.json();

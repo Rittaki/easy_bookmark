@@ -8,10 +8,10 @@ function FolderLocationNav(props) {
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getFolders",
-            folder: "main"
+            folder: "Home"
         }, (response) => {
             if (response.success) {
-                console.log('"main" folders fetched', response.success);
+                console.log('"Home" folders fetched', response.success);
                 setFolders(response.success);
             };
         });

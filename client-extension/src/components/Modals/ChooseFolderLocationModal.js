@@ -5,23 +5,53 @@ import { useState } from 'react';
 import FolderLocationNav from './FolderLocationNav/FolderLocationNav';
 
 function ChooseFolderLocationModal(props) {
-    // add function that updates parent folder
-    const updateFolderObject = (newFolder) => {
+
+    const getPath = async (chosenFolder) => {
+        try {
+            let response = await chrome.runtime.sendMessage({
+                action: "getFolderByName",
+                folderName: chosenFolder
+            });
+            console.log(`${chosenFolder} fetched`, response.success);
+            return response.success[0].path;
+        }
+        catch (error) {
+            console.log('Error fetching folder by name', error);
+        }
+    };
+
+    const updateBookmarkObject = async (newFolder, newPath = '') => {
+        let response = await getPath(newFolder);
+
+        const currentBookmark = props.state.lastBookmark;
+        let updatedBookmark;
+        if (newPath === '') {
+            updatedBookmark = {
+                ...currentBookmark,
+                folder: newFolder,
+                path: response + '/' + newFolder
+            };
+        }
+        else {
+            updatedBookmark = {
+                ...currentBookmark,
+                path: newPath + '/' + newFolder + '/' + currentBookmark.folder
+            };
+        }
+        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
+    };
+
+    const updateFolderObject = async (newFolder) => {
+        let newPath = await getPath(newFolder);
+        updateBookmarkObject(newFolder, newPath);
+
         const currentFolder = props.state.lastFolder;
         const updatedFolder = {
             ...currentFolder,
             parentFolder: newFolder,
+            path: newPath + '/' + newFolder
         };
         props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }))
-    };
-
-    const updateBookmarkObject = (newFolder) => {
-        const currentBookmark = props.state.lastBookmark;
-        const updatedBookmark = {
-            ...currentBookmark,
-            folder: newFolder,
-        };
-        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
     };
 
     const updateOpenModal = (modalToOpen) => {

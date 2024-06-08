@@ -14,6 +14,10 @@ const folderSchema = new Schema({
     linksNumber: {
         type: Number,
         required: true
+    },
+    path: {
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 

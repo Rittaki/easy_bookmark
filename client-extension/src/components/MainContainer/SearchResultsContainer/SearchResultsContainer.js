@@ -11,9 +11,15 @@ function SearchResultsContainer(props) {
         })
     };
 
-    const handleFolderOpen = (folder) => {
-        console.log("folder to open: " + folder);
-        updateCurrentFolderToLoad(folder);
+    const handleFolderOpen = (bookmark) => {
+        console.log("folder to open: " + bookmark.folder);
+        const crumbs = bookmark.path.split('/').filter((crumb) => crumb !== '');
+        if (crumbs.length > 0) {
+            crumbs.pop();
+        }
+        // crumbs = crumbs.slice(0, -1);
+        props.setCrumbs(crumbs);
+        updateCurrentFolderToLoad(bookmark.folder);
         props.setSearchTerm("");
     };
 
@@ -59,7 +65,7 @@ function SearchResultsContainer(props) {
                             ))}
                         </small>
                         <i className="fs-5 folder-link-icon bi bi-folder-symlink text-primary"
-                            onClick={() => handleFolderOpen(bookmark.folder)}></i>
+                            onClick={() => handleFolderOpen(bookmark)}></i>
                     </div>
                 ))}
 

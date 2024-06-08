@@ -36,28 +36,57 @@ function ChooseFolderModal(props) {
         setChosenFolder(e.target.value);
     };
 
-    const updateFolderObject = (newFolder) => {
+    const updateFolderObject = (newFolder, newPath) => {
         const currentFolder = props.state.lastFolder;
         const updatedFolder = {
             ...currentFolder,
             name: newFolder,
+            path: newPath
         };
         props.setState((prevState) => ({ ...prevState, lastFolder: updatedFolder }));
     };
 
-    const updateBookmarkObject = (newFolder) => {
+    const updateBookmarkObject = (newFolder, newPath) => {
         const currentBookmark = props.state.lastBookmark;
         const updatedBookmark = {
             ...currentBookmark,
             folder: newFolder,
+            path: newPath + '/' + newFolder
         };
         props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
     };
 
-    const updateOpenModal = (modalToOpen) => {
+    const getPath = async (chosenFolder) => {
+        try {
+            let response = await chrome.runtime.sendMessage({
+                action: "getFolderByName",
+                folderName: chosenFolder
+            });
+            console.log(`${chosenFolder} fetched`, response.success);
+            return response.success[0].path;
+        }
+        catch (error) {
+            console.log('Error fetching folder by name', error);
+        }
+        // chrome.runtime.sendMessage({
+        //     action: "getFolderByName",
+        //     folderName: chosenFolder
+        // }, (response) => {
+        //     if (response.success) {
+        //         console.log(`${chosenFolder} fetched`, response.success);
+        //         return response.success[0].path;
+        //     };
+        // });
+    }
+
+    const updateOpenModal = async (modalToOpen, isSuggestedFolder = false) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
-        updateBookmarkObject(chosenFolder);
-        updateFolderObject(chosenFolder);
+        let path = '';
+        if (isSuggestedFolder) {
+            path = await getPath(chosenFolder);
+        }
+        updateBookmarkObject(chosenFolder, path);
+        updateFolderObject(chosenFolder, path);
     }
 
     const closeModal = () => {
@@ -101,7 +130,7 @@ function ChooseFolderModal(props) {
                                 <label className="form-check-label" htmlFor='folderRadioGrid3'
                                     onClick={() => {
                                         setNewFolderSelected(true);
-                                        setChosenFolder("New");
+                                        setChosenFolder("_new");
                                         updateOpenModal('choose-folder-name-modal');
                                         props.setState((prevState) => ({ ...prevState, chooseExistingFolder: false }))
                                     }}>
@@ -137,7 +166,7 @@ function ChooseFolderModal(props) {
             <Modal.Footer>
                 <Button variant="secondary" onClick={() => { updateOpenModal('ask-user-modal') }}>Back</Button>
                 <Button variant="success" onClick={() => {
-                    updateOpenModal('choose-bookmark-name-modal');
+                    updateOpenModal('choose-bookmark-name-modal', true);
                     props.setState((prevState) => ({ ...prevState, isAnotherFolder: false, chooseExistingFolder: false }))
                 }}>Next</Button>
             </Modal.Footer>

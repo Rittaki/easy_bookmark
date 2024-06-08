@@ -13,6 +13,7 @@ import EditModal from './Modals/EditModal';
 import ContextMenu from './ContextMenu/ContextMenu';
 import SearchResultsContainer from './MainContainer/SearchResultsContainer/SearchResultsContainer';
 import SearchBar from './MainContainer/SearchBar/SearchBar';
+import Breadcrumbs from './MainContainer/Breadcrumbs/Breadcrumbs';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
@@ -21,13 +22,27 @@ function PopupStartWindow() {
     folderToEdit: null, bookmarkToEdit: { title: "", url: "" },
     reloadAfterAction: false,
     isFolderEdited: false,
-    currentClickedLocationFolder: "main",
+    currentClickedLocationFolder: "Home",
     currentClickedFolder: null, currentClickedBookmark: null,
-    currentFolderToLoad: "main",
+    currentFolderToLoad: "Home",
     currentUrl: null, openModal: '', isAnotherFolder: false,
-    lastBookmark: { title: '', url: '', folder: '' },
-    lastFolder: { name: '', parentFolder: '', linksNumber: 0 }
+    lastBookmark: { title: '', url: '', folder: '', path: '' },
+    lastFolder: { name: '', parentFolder: '', linksNumber: 0, path: '' }
   });
+
+  // breadcrumbs
+  const [crumbs, setCrumbs] = useState([]);
+  const [historyCrumbs, setHistoryCrumbs] = useState([]);
+  // create a function (eg. handleSetCrumbs) to update the crumbs that adds each state of crumbs to array of arrays
+  // and calls setCrumbs (send this function to components instead of setCrumbs directly). state of crumbs save to history
+
+  const selected = (crumb, path) => {
+    console.log(crumb);
+    const crumbs = path.split('/').filter((crumb) => crumb !== '');
+    console.log('Crumbs:', crumbs);
+    setCrumbs(crumbs);
+    setState((prevState) => ({ ...prevState, currentFolderToLoad: crumb }));
+  }
 
   // search functionality
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,9 +50,9 @@ function PopupStartWindow() {
 
   // maybe add here the states for chat-gpt generated objects
 
-  const [currentBookmark, setCurrentBookmark] = useState({ id: "", title: "", url: "" });
+  const [currentBookmark, setCurrentBookmark] = useState({ id: "", title: "", url: "", path: "" });
 
-  const [currentFolder, setCurrentFolder] = useState({ id: "", name: "" });
+  const [currentFolder, setCurrentFolder] = useState({ id: "", name: "", path: "" });
 
   // Context menu logic
   const contextMenuRef = useRef(null);
@@ -63,19 +78,19 @@ function PopupStartWindow() {
     console.log(rightClickedItem);
     if (itemType === 'bookmark') {
       setCurrentBookmark(
-        (prevState) => ({ ...prevState, id: rightClickedItem._id, title: rightClickedItem.title, url: rightClickedItem.url }));
+        (prevState) => ({ ...prevState, id: rightClickedItem._id, title: rightClickedItem.title, url: rightClickedItem.url, path: rightClickedItem.path }));
     }
     else if (itemType === 'folder') {
       setCurrentFolder(
-        (prevState) => ({ ...prevState, id: rightClickedItem._id, name: rightClickedItem.name }));
+        (prevState) => ({ ...prevState, id: rightClickedItem._id, name: rightClickedItem.name, path: rightClickedItem.path }));
     }
   };
 
   const resetContextMenu = () => {
     setContextMenu({ position: { x: 0, y: 0 }, toggled: false });
 
-    setCurrentFolder((prevState) => ({ ...prevState, id: "", name: "" }));
-    setCurrentBookmark((prevState) => ({ ...prevState, id: "", title: "", url: "" }));
+    setCurrentFolder((prevState) => ({ ...prevState, id: "", name: "", path: "" }));
+    setCurrentBookmark((prevState) => ({ ...prevState, id: "", title: "", url: "", path: "" }));
   };
 
   useEffect(() => {
@@ -185,12 +200,31 @@ function PopupStartWindow() {
                 <ChooseFolderLocationModal show={state.openModal === 'choose-folder-location-modal'} onHide={handleClose} setState={setState} state={state} />
 
               </li>
+
+              <li className="nav-item">
+                <nav aria-label="Back-Forward Folders Navigation">
+                  <ul className="pagination">
+                    <li className="page-item disabled">
+                      <a className="page-link py-0 px-1" href="#" tabIndex={-1}>
+                        <i className="bi bi-arrow-left-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
+                      </a>
+                    </li>
+
+                    <li className="page-item">
+                      <a className="page-link py-0 px-1" href="#">
+                        <i className="bi bi-arrow-right-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </li>
+
             </ul>
           </div>
         </div>
         <div className="container folders-list-container">
 
-          <FoldersList setState={setState} state={state} />
+          <FoldersList setState={setState} state={state} setCrumbs={setCrumbs} />
 
         </div>
       </div>
@@ -200,11 +234,13 @@ function PopupStartWindow() {
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults} />
 
           {searchTerm ?
-            <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults} setState={setState} state={state}/>
+            <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults}
+              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs}/>
             :
             <div className="row folders-row ">
+              <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />
 
-              <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
+              <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} setCrumbs={setCrumbs} crumbs={crumbs} />
               <BookmarksContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
               <ContextMenu
                 contextMenuRef={contextMenuRef}

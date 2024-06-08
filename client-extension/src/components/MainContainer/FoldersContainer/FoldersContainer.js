@@ -27,6 +27,7 @@ function FoldersContainer(props) {
                 console.log(`${props.state.currentFolderToLoad} folders fetched`, response.success);
                 setFolders(response.success);
                 setToLoad(false);
+                // updateCrumbs(props.state.currentFolderToLoad)
             };
         });
     }, [props.state.currentFolderToLoad, toLoad, props.state.reloadAfterAction]);
@@ -35,7 +36,7 @@ function FoldersContainer(props) {
         <div className="folders-container-right row row-cols-3">
             {folders && folders.map((folder) => (
                 <SingleFolder key={folder._id} folder={folder} setFolders={setFolders} setState={props.setState} state={props.state}
-                    onDoubleClick={handleFolderDoubleClick} setToLoad={setToLoad} handleOnContextMenu={props.handleOnContextMenu} />
+                    onDoubleClick={handleFolderDoubleClick} setToLoad={setToLoad} handleOnContextMenu={props.handleOnContextMenu} setCrumbs={props.setCrumbs}/>
             ))}
         </div>
     );
