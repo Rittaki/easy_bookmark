@@ -14,6 +14,7 @@ import ContextMenu from './ContextMenu/ContextMenu';
 import SearchResultsContainer from './MainContainer/SearchResultsContainer/SearchResultsContainer';
 import SearchBar from './MainContainer/SearchBar/SearchBar';
 import Breadcrumbs from './MainContainer/Breadcrumbs/Breadcrumbs';
+import Logout from './MainContainer/Logout/Logout';
 
 function PopupStartWindow() {
   const [state, setState] = useState({
@@ -230,12 +231,18 @@ function PopupStartWindow() {
       </div>
       <div className="col-8 right-side">
         <div className="container">
-
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults} />
+          <div className="row">
+            <div className='col'>
+              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults} />
+            </div>
+            <div className='col-3'>
+              <Logout />
+            </div>
+          </div>
 
           {searchTerm ?
             <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults}
-              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs}/>
+              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs} />
             :
             <div className="row folders-row ">
               <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />
