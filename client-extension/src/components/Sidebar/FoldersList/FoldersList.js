@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-
+import { useAuthContext } from '../../hooks/useAuthContext';
 import FolderItem from "../FolderItem/FolderItem";
 
 function FoldersList(props) {
     const [folders, setFolders] = useState(null);
+    const { user } = useAuthContext();
 
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getFolders",
-            folder: "Home"
+            folder: "Home",
+            userId: user.uid
         }, (response) => {
             if (response.success) {
                 console.log('"Home" folders fetched', response.success);

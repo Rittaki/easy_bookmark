@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 function FolderItem(props) {
     const [folders, setFolders] = useState(null);
     const [toLoad, setToLoad] = useState(false);
+    const { user } = useAuthContext();
 
     const updateCrumbs = (newCrumbs) => {
         const crumbs = newCrumbs.split('/').filter((crumb) => crumb !== '');
@@ -14,7 +16,8 @@ function FolderItem(props) {
         if (toLoad) {
             chrome.runtime.sendMessage({
                 action: "getFolders",
-                folder: props.folder.name
+                folder: props.folder.name,
+                userId: user.uid
             }, (response) => {
                 if (response.success) {
                     console.log(`${props.folder.name} folders fetched`, response.success);

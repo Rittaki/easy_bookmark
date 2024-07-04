@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { useAuthContext } from '../../hooks/useAuthContext';
 import SingleBookmark from "../SingleBookmark/SingleBookmark";
 
 function BookmarksContainer(props) {
     const [bookmarks, setBookmarks] = useState(null);
+    const { user } = useAuthContext();
 
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getBookmarks",
-            folder: props.state.currentFolderToLoad
+            folder: props.state.currentFolderToLoad,
+            userId: user.uid
         }, (response) => {
             if (response.success) {
                 console.log(`${props.state.currentFolderToLoad} bookmarks fetched`, response.success);

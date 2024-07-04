@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useAuthContext } from '../../hooks/useAuthContext';
 import SingleFolder from "../SingleFolder/SingleFolder";
 import "./FoldersContainer.css";
 
 function FoldersContainer(props) {
     const [folders, setFolders] = useState(null);
     const [toLoad, setToLoad] = useState(false);
+    const { user } = useAuthContext();
 
     const handleFolderDoubleClick = () => {
         // Load new folder logic here
@@ -21,7 +23,8 @@ function FoldersContainer(props) {
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getFolders",
-            folder: props.state.currentFolderToLoad
+            folder: props.state.currentFolderToLoad,
+            userId: user.uid
         }, (response) => {
             if (response.success) {
                 console.log(`${props.state.currentFolderToLoad} folders fetched`, response.success);

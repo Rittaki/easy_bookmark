@@ -10,6 +10,25 @@ function Register() {
     const [isPending, setIsPending] = useState(false);
     const { dispatch } = useAuthContext();
 
+    const registerUserToMongodb = (user) => {
+        chrome.runtime.sendMessage({
+            action: "createUser",
+            user: {
+                name: user.displayName,
+                email: user.email,
+                uid: user.uid
+            }
+        }, (response) => {
+            if (response.success) {
+                console.log('User added to MongoDB (message from client)', response);
+                setError(null);
+            }
+            else {
+                setError(json.error);
+            };
+        });
+    }
+
     const handleRegister = async (email, password, name) => {
         setError(null);
         setIsPending(true);
@@ -17,7 +36,7 @@ function Register() {
         try {
             // signup
             const res = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(res.user);
+            console.log("inside handleRegister:", res.user);
 
             if (!res) {
                 throw new Error('Could not complete signup')
@@ -26,12 +45,14 @@ function Register() {
             await updateProfile(res.user, {
                 displayName: name
             });
+            // add creation of profile to mongodb
+            registerUserToMongodb(res.user);
             // dispatch login action
             dispatch({ type: 'LOGIN', payload: res.user });
-            // add creation of profile to mongodb
+
             setIsPending(false);
             setError(null);
-  
+
         } catch (err) {
             console.log(err.message);
             setError(err.message);
@@ -53,7 +74,6 @@ function Register() {
         const email = e.target.email.value;
         const password = e.target.password.value;
         const displayName = e.target.displayName.value;
-        console.log('email', email, 'password', password, 'displayName', displayName);
         handleRegister(email, password, displayName);
     }
 

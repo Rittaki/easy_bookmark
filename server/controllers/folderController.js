@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 
 const func = async () => {
     // const res = await Bookmark.updateMany(
-    //     { folder: "Recipes" },
+    //     { folder: "Travel" },
     //     {
-    //         $set: { path: "Home/Recipes" },
+    //         $set: { userId: "nJMBz5aTXCRCW7tQlK5vdMJyl2P2" },
     //     },
     //     { multi: true }
     // );
@@ -17,7 +17,7 @@ const func = async () => {
 // get all folders
 const getFolders = async (req, res) => {
     const reqQuery = req.query;
-    console.log(reqQuery);
+    console.log("reqQuery for folders is: ", reqQuery);
 
     const folders = await Folder.find(reqQuery).sort({ createdAt: -1 }); // add conditions inside brackets, for example: { parentFolder: 'Education'} returns all folders that are in Education folder
 
@@ -50,11 +50,11 @@ const getFolder = async (req, res) => {
 
 // create new folder
 const createFolder = async (req, res) => {
-    const { name, parentFolder, linksNumber, path } = req.body;
+    const { name, parentFolder, linksNumber, path, userId } = req.body;
 
     // add doc to db
     try {
-        const folder = await Folder.create({ name, parentFolder, linksNumber, path });
+        const folder = await Folder.create({ name, parentFolder, linksNumber, path, userId });
         res.status(200).json(folder);
     } catch (error) {
         res.status(400).json({ error: error.message });

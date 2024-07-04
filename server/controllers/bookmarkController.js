@@ -6,7 +6,7 @@ const escapeRegExp = require('lodash.escaperegexp');
 const getBookmarks = async (req, res) => {
     const reqQuery = req.query;
     console.log(reqQuery);
-
+    
     const bookmarks = await Bookmark.find(reqQuery).sort({ createdAt: -1 }); // add conditions inside brackets, for example: { folder: 'Education'} returns all bookmarks that are in Education folder
 
     res.status(200).json(bookmarks);
@@ -29,11 +29,11 @@ const getBookmark = async (req, res) => {
 
 // create new bookmark
 const createBookmark = async (req, res) => {
-    const { title, url, folder, path } = req.body;
+    const { title, url, folder, path, userId } = req.body;
 
     // add doc to db
     try {
-        const bookmark = await Bookmark.create({ title, url, folder, path });
+        const bookmark = await Bookmark.create({ title, url, folder, path, userId });
         res.status(200).json(bookmark);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -75,10 +75,11 @@ const updateBookmark = async (req, res) => {
 // search bookmarks
 const searchBookmarks = async (req, res) => {
     console.log("inside search function");
+    console.log(req.query);
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = parseInt(req.query.startIndex) || 0;
     const searchTerm = escapeRegExp(req.query.searchTerm) || '';
-
+    const uid = req.query.userId;
     const bookmarks = await Bookmark.find({
         $or: [
             {
@@ -87,7 +88,8 @@ const searchBookmarks = async (req, res) => {
             {
                 url: { $regex: searchTerm, $options: 'i' }
             }
-        ]
+        ],
+        userId: uid
     }).limit(limit).skip(startIndex);
     console.log(bookmarks);
     if (!bookmarks) {

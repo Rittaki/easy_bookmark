@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
+import { useAuthContext } from '../../hooks/useAuthContext';
 import "./FolderLocationNav.css"
 import FolderLocationNavItem from "./FolderLocationNavItem";
 
 function FolderLocationNav(props) {
     const [folders, setFolders] = useState(null);
+    const { user } = useAuthContext();
 
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getFolders",
-            folder: "Home"
+            folder: "Home",
+            userId: user.uid
         }, (response) => {
             if (response.success) {
                 console.log('"Home" folders fetched', response.success);

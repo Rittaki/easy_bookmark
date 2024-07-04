@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 function SearchBar(props) {
-
+    const { user } = useAuthContext();
+    
     const fetchSearch = (value) => {
         console.log(value);
         chrome.runtime.sendMessage({
             action: "searchBookmarks",
-            query: value
+            query: value,
+            userId: user.uid
         }, (response) => {
             if (response.success) {
                 console.log('Search results for bookmarks (message from client)', response);

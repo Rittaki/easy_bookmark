@@ -29,14 +29,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'getFolders') {
         console.log(message);
         const parentFolder = message.folder;
-        let result = fetchFolders(parentFolder);
+        const userId = message.userId;
+        let result = fetchFolders(parentFolder, userId);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
     if (message.action === 'getBookmarks') {
         console.log(message);
         const folder = message.folder;
-        let result = fetchBookmarks(folder);
+        const userId = message.userId;
+        let result = fetchBookmarks(folder, userId);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
@@ -109,18 +111,49 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'searchBookmarks') {
         console.log(message);
         const query = message.query;
-        let result = searchBookmarks(query);
+        const userId = message.userId;
+        let result = searchBookmarks(query, userId);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
+    if (message.action === 'createUser') {
+        console.log('got createUser in background', message);
+        const user = message.user;
+        let result = createUser(user);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
 });
 
+async function createUser(user) {
+    try {
+        const response = await fetch("http://localhost:4000/api/users/register", {
+            method: "POST",
+            body: JSON.stringify(user),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            console.log("User added (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 // CRUD Operations
 
 // works somehow
-async function fetchFolders(parentFolder) {
+async function fetchFolders(parentFolder, userId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${parentFolder}`);
+        const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${parentFolder}&userId=${userId}`);
         console.log(response);
         if (response.ok) {
             const json = await response.json();
@@ -146,9 +179,9 @@ async function fetchFolderByName(name) {
     }
 };
 
-async function fetchBookmarks(folder) {
+async function fetchBookmarks(folder, userId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/bookmarks/?folder=${folder}`);
+        const response = await fetch(`http://localhost:4000/api/bookmarks/?folder=${folder}&userId=${userId}`);
         console.log(response);
         if (response.ok) {
             const json = await response.json();
@@ -160,9 +193,9 @@ async function fetchBookmarks(folder) {
     }
 };
 
-async function searchBookmarks(query) {
+async function searchBookmarks(query, userId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/bookmarks/search?searchTerm=${query}`);
+        const response = await fetch(`http://localhost:4000/api/bookmarks/search?searchTerm=${query}&userId=${userId}`);
         console.log(response);
         if (response.ok) {
             const json = await response.json();

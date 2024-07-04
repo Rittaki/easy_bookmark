@@ -1,5 +1,6 @@
 import './PopupStartWindow.css';
 import { useState, useEffect, useRef } from 'react';
+import { useAuthContext } from './hooks/useAuthContext';
 import ChooseFolderModal from './Modals/ChooseFolderModal';
 import AskUserModal from './Modals/AskUserModal';
 import ChooseBookmarkNameModal from './Modals/ChooseBookmarkNameModal';
@@ -17,6 +18,7 @@ import Breadcrumbs from './MainContainer/Breadcrumbs/Breadcrumbs';
 import Logout from './MainContainer/Logout/Logout';
 
 function PopupStartWindow() {
+  const { user } = useAuthContext();
   const [state, setState] = useState({
     chooseExistingFolder: false,
     folderToDelete: null, bookmarkToDelete: null,
@@ -27,8 +29,8 @@ function PopupStartWindow() {
     currentClickedFolder: null, currentClickedBookmark: null,
     currentFolderToLoad: "Home",
     currentUrl: null, openModal: '', isAnotherFolder: false,
-    lastBookmark: { title: '', url: '', folder: '', path: '' },
-    lastFolder: { name: '', parentFolder: '', linksNumber: 0, path: '' }
+    lastBookmark: { title: '', url: '', folder: '', path: '', userId: user.uid },
+    lastFolder: { name: '', parentFolder: '', linksNumber: 0, path: '', userId: user.uid }
   });
 
   // breadcrumbs
@@ -161,6 +163,8 @@ function PopupStartWindow() {
       title: "",
       url: "",
       folder: "",
+      path: "",
+      userId: user.uid
     };
     setState((prevState) => ({ ...prevState, lastBookmark: defaultBookmark }));
 
@@ -168,6 +172,8 @@ function PopupStartWindow() {
       name: "",
       parentFolder: "",
       linksNumber: 0,
+      path: "",
+      userId: user.uid
     };
     setState((prevState) => ({ ...prevState, lastFolder: defaultFolder }));
   }
