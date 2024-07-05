@@ -24,3 +24,8 @@
     width: 20px;
     height: 20px;
 }
+
+.search-results-container {
+    display: flex;
+    flex-direction: column;
+}

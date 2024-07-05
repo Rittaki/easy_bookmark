@@ -50,6 +50,8 @@ function PopupStartWindow() {
   // search functionality
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [webSearch, setWebSearch] = useState(false);
+  const [webSearchResults, setWebSearchResults] = useState(false);
 
   // maybe add here the states for chat-gpt generated objects
 
@@ -239,16 +241,18 @@ function PopupStartWindow() {
         <div className="container">
           <div className="row">
             <div className='col'>
-              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults} />
+              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults}
+                webSearch={webSearch} setWebSearch={setWebSearch} setWebSearchResults={setWebSearchResults} />
             </div>
-            <div className='col-3'>
+            <div className='col-2 px-0'>
               <Logout />
             </div>
           </div>
 
           {searchTerm ?
             <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults}
-              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs} />
+              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs}
+              webSearch={webSearch} setWebSearch={setWebSearch} webSearchResults={webSearchResults}/>
             :
             <div className="row folders-row ">
               <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />

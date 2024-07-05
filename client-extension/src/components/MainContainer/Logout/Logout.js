@@ -29,10 +29,10 @@ function Logout(props) {
     }
 
     return (
-        <div>
+        <div className='logout-container'>
             <li className="logout">Hello, {user.displayName}</li>
             <li className="logout">
-                <button className="logout btn" onClick={handleLogout}>Logout</button>
+                <button className="logout btn" onClick={handleLogout}><small>Logout</small></button>
             </li>
         </div>
     );
