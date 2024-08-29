@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { AuthContextProvider } from './components/Authentication/AuthContext'
+import { AuthContextProvider } from './components/contexts/AuthContext'
+import { HistoryContextProvider } from './components/contexts/HistoryContext';
 // Import our custom CSS
 import './scss/styles.scss';
 
@@ -15,7 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-      <App />
+      <HistoryContextProvider>
+        <App />
+      </HistoryContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );

@@ -5,7 +5,7 @@ function Breadcrumbs(props) {
     const updateBreadcrumbs = async (crumb) => {
         if (crumb === 'Home') {
             console.log('Crumb is ' + crumb);
-            props.selected(crumb, "/");
+            props.selected(crumb, [{ _id: "66a65fac5eddc59b4d8525f6", name: "Home", parentFolder: "", linksNumber: 2, path: "/" }]);
         }
         else {
             chrome.runtime.sendMessage({
@@ -14,7 +14,7 @@ function Breadcrumbs(props) {
             }, (response) => {
                 if (response.success) {
                     console.log(`${crumb} folder detailes fetched`, response.success);
-                    props.selected(crumb, response.success[0].path);
+                    props.selected(crumb, response.success);
                 };
             });
         }
@@ -34,7 +34,7 @@ function Breadcrumbs(props) {
                     })
                 }
                 <li className="breadcrumb-item active" aria-current="page">
-                    <button className="btn btn-link disabled p-0">{props.state.currentFolderToLoad}</button>
+                    <button className="btn btn-link disabled p-0">{props.state.currentFolderToLoad.name}</button>
                 </li>
             </ol>
         </nav>

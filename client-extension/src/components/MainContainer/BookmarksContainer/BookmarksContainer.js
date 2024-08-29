@@ -9,11 +9,11 @@ function BookmarksContainer(props) {
     useEffect(() => {
         chrome.runtime.sendMessage({
             action: "getBookmarks",
-            folder: props.state.currentFolderToLoad,
+            folder: props.state.currentFolderToLoad.name,
             userId: user.uid
         }, (response) => {
             if (response.success) {
-                console.log(`${props.state.currentFolderToLoad} bookmarks fetched`, response.success);
+                console.log(`${props.state.currentFolderToLoad.name} bookmarks fetched`, response.success);
                 setBookmarks(response.success);
             };
         });

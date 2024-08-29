@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import './Navbar.css'
 
@@ -11,8 +11,8 @@ function Navbar() {
                 <li className="title">EasyBookmark</li>
                 {!user && (
                     <ul>
-                        <li><Link to="/login">Login</Link></li>
-                        <li><Link to="/register">Signup</Link></li>
+                        <li><NavLink to="/login">Login</NavLink></li>
+                        <li><NavLink to="/register">Signup</NavLink></li>
                     </ul>
                 )}
             </ul>

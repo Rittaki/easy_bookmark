@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import "./SearchResultsContainer.css"
+import { useHistoryContext } from "../../hooks/useHistoryContext";
 
 function SearchResultsContainer(props) {
+    const { backStack, forwardStack, handleFolderClick } = useHistoryContext();
     const splitRegex = new RegExp(props.searchTerm, "i");
     // const match = props.searchResults.match(splitRegex);
 
@@ -20,23 +22,50 @@ function SearchResultsContainer(props) {
         }
         // crumbs = crumbs.slice(0, -1);
         props.setCrumbs(crumbs);
-        updateCurrentFolderToLoad(bookmark.folder);
+        // props.setSearchTerm(null);
+        chrome.runtime.sendMessage({
+            action: "getFolderByName",
+            folderName: bookmark.folder
+        }, (response) => {
+            if (response.success) {
+                console.log(`${bookmark.folder} folder detailes fetched`, response.success);
+                updateCurrentFolderToLoad(response.success[0]);
+            };
+        });
+        // updateCurrentFolderToLoad(bookmark.folder);
+        
+        // props.setSearchTerm("");
+    };
+
+    const updateCurrentFolderToLoad = (newFolder) => {
+        // const newFolder = props.state.currentFolderToLoad
+        // newFolder.name = folder;
+        props.setState((prevState) => ({ ...prevState, currentFolderToLoad: newFolder }));
+        handleFolderClick(newFolder);
         props.setSearchTerm("");
     };
 
-    const updateCurrentFolderToLoad = (folder) => {
-        props.setState((prevState) => ({ ...prevState, currentFolderToLoad: folder }));
-    };
 
- 
     // if serach in web checked, then create condition that load another div that maps search results (not like bookmarks)
 
     return (
         <div className="search-results-container">
 
             {props.webSearch ?
-                <div className="web-search-results">
+                <div className="list-group list-group-flush web-search-results">
                     Web search is ON
+                    {
+                        props.webSearchResults && props.webSearchResults.map((result, index) => (
+                            <div key={index} className="mt-1 list-group-item d-flex justify-content-between align-items-left web-search-result">
+                                <a href={result.link} target="_blank" rel="noreferrer">
+                                    <h5 dangerouslySetInnerHTML={{ __html: result.htmlTitle }}></h5>
+                                </a>
+                                <small dangerouslySetInnerHTML={{ __html: result.htmlFormattedUrl }}></small>
+                                <p className="mb-0" dangerouslySetInnerHTML={{ __html: result.htmlSnippet }}></p>
+
+                            </div>
+                        ))
+                    }
                 </div>
                 :
                 <div className="list-group list-group-flush">

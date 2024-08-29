@@ -123,7 +123,35 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         result.then(res => sendResponse({ success: res }));
         return true;
     }
+    if (message.action === 'searchInWeb') {
+        console.log('searchInWeb in background', message);
+        const query = message.query;
+        const folderId = message.folderId;
+        let result = searchInWeb(query, folderId);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
 });
+
+async function searchInWeb(query, folderId) {
+    try {
+        const response = await fetch('http://localhost:4000/api/web_search', {
+            method: "POST",
+            body: JSON.stringify({ query: query, folderId: folderId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log(response);
+        if (response.ok) {
+            const json = await response.json();
+            console.log("Search results bookmarks (message from background)", json);
+            return json;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function createUser(user) {
     try {
@@ -154,10 +182,10 @@ async function createUser(user) {
 async function fetchFolders(parentFolder, userId) {
     try {
         const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${parentFolder}&userId=${userId}`);
-        console.log(response);
+        // console.log(response);
         if (response.ok) {
             const json = await response.json();
-            console.log(json);
+            // console.log(json);
             return json;
         }
     } catch (error) {
@@ -185,7 +213,7 @@ async function fetchBookmarks(folder, userId) {
         console.log(response);
         if (response.ok) {
             const json = await response.json();
-            console.log(json);
+            // console.log(json);
             return json;
         }
     } catch (error) {
@@ -263,7 +291,7 @@ async function updateBookmark(oldUrl, newTitle, newUrl) {
                 return patchJson;
             }
         }
- 
+
     } catch (error) {
         console.error(error);
     }

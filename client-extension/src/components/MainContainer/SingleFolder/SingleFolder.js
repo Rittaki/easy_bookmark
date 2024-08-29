@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import "./SingleFolder.css"
+import { useHistoryContext } from "../../hooks/useHistoryContext";
+
 
 function SingleFolder(props) {
+    const { backStack, forwardStack, handleFolderClick } = useHistoryContext();
     const [isClicked, setIsClicked] = useState(false);
 
     const handleBlur = () => {
@@ -52,22 +55,32 @@ function SingleFolder(props) {
         } else if (event.detail === 2) {
             // Handle double click (e.g., load new folder)
             // setToLoad(true);
-            updateCurrentFolderToLoad(props.folder.name);
+            updateCurrentFolderToLoad(props.folder);
             updateCrumbs(props.folder.path);
             props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
             props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
             timer = setTimeout(props.onDoubleClick, 200);
+            const folderToHistory = props.folder;
+            handleFolderClick(folderToHistory);
         }
     };
+
+    // const handleDragStart = (e, folder, type) => {
+    //     e.dataTransfer.setData('type', type);
+    //     e.dataTransfer.setData('folder', JSON.stringify(folder));
+    // }
 
     return (
         <div className={`mt-2 me-2 card text-center single-folder ${isClicked ? 'highlighted' : ''}`} >
 
-            <div className="flex flex-col flex-1 justify-between p-2" tabIndex={0} onClick={onClickHandler} onBlur={handleBlur}
+            <div
+                className="flex flex-col flex-1 justify-between p-2"
+                // draggable onDragStart={(e) => { handleDragStart(e, props.folder, 'folder') }}
+                tabIndex={0} onClick={onClickHandler} onBlur={handleBlur}
                 onContextMenu={(e) => { props.handleOnContextMenu(e, props.folder, 'folder') }}>
-                
-                    <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                
+
+                <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
+
                 <section className="folder-details">
                     <h6 className="folder-name">{props.folder.name}</h6>
                     <small>{props.folder.linksNumber} links</small>

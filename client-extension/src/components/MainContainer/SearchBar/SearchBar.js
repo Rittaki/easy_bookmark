@@ -39,20 +39,22 @@ function SearchBar(props) {
         console.log("Enter key pressed: ");
         console.log(value);
         if (props.webSearch) {
-            console.log("search in web")
-            // chrome.runtime.sendMessage({
-            //     action: "searchInWeb",
-            //     query: props.searchTerm
-            // }, (response) => {
-            //     if (response.success) {
-            //         console.log('Search results for web (message from client)', response);
-            //         props.setWebSearchResults(response.success);
-            //         // setError(null);
-            //     }
-            //     else {
-            //         // setError(json.error);
-            //     };
-            // })
+            console.log("search in web for folder: " + props.state.currentFolderToLoad._id);
+            chrome.runtime.sendMessage({
+                action: "searchInWeb",
+                query: props.searchTerm,
+                // folderId: "65f2d88b0eba8598334e85e2"
+                folderId: props.state.currentFolderToLoad._id
+            }, (response) => {
+                if (response.success) {
+                    console.log('Search results for web (message from client)', response);
+                    props.setWebSearchResults(response.success);
+                    // setError(null);
+                }
+                else {
+                    // setError(json.error);
+                };
+            })
         }
     };
 

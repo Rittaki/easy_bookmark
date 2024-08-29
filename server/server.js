@@ -7,6 +7,7 @@ const bookmarksRoutes = require('./routes/bookmarks');
 const foldersRoutes = require('./routes/folders');
 const chatgptRoutes = require('./routes/chatgpt');
 const usersRoutes = require('./routes/users');
+const webSearchRoutes = require('./routes/webSearch');
 // additional imports for search
 const axios = require('axios');
 
@@ -27,6 +28,7 @@ app.use('/api/bookmarks', bookmarksRoutes);
 app.use('/api/folders', foldersRoutes);
 app.use('/api/chatgpt', chatgptRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/web_search', webSearchRoutes);
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
@@ -67,20 +69,3 @@ mongoose.connect(process.env.MONGO_URI)
 //     });
 //  });
 
-async function search(query) {
-    const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
-    const searchEngineId = process.env.SEARCH_ENGINE_ID;
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${query}`;
-
-    try {
-        const response = await axios.get(url);
-        const searchResults = response.data.items;
-        // Process the search results as needed
-        console.log(searchResults);
-    } catch (error) {
-        console.error('Error fetching search results:', error.message);
-    }
-}
-
-// Example usage
-// search('Creme pattissiere site:https://theloopywhisk.com/');

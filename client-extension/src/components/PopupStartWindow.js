@@ -16,6 +16,8 @@ import SearchResultsContainer from './MainContainer/SearchResultsContainer/Searc
 import SearchBar from './MainContainer/SearchBar/SearchBar';
 import Breadcrumbs from './MainContainer/Breadcrumbs/Breadcrumbs';
 import Logout from './MainContainer/Logout/Logout';
+import BackForward from './MainContainer/BackForward/BackForward';
+import { useHistoryContext } from './hooks/useHistoryContext';
 
 function PopupStartWindow() {
   const { user } = useAuthContext();
@@ -27,7 +29,8 @@ function PopupStartWindow() {
     isFolderEdited: false,
     currentClickedLocationFolder: "Home",
     currentClickedFolder: null, currentClickedBookmark: null,
-    currentFolderToLoad: "Home",
+    // currentFolderToLoad: "Home",
+    currentFolderToLoad: {_id: "66a65fac5eddc59b4d8525f6", name: "Home", parentFolder: "", linksNumber: 2, path: "/"},
     currentUrl: null, openModal: '', isAnotherFolder: false,
     lastBookmark: { title: '', url: '', folder: '', path: '', userId: user.uid },
     lastFolder: { name: '', parentFolder: '', linksNumber: 0, path: '', userId: user.uid }
@@ -35,16 +38,16 @@ function PopupStartWindow() {
 
   // breadcrumbs
   const [crumbs, setCrumbs] = useState([]);
-  const [historyCrumbs, setHistoryCrumbs] = useState([]);
-  // create a function (eg. handleSetCrumbs) to update the crumbs that adds each state of crumbs to array of arrays
-  // and calls setCrumbs (send this function to components instead of setCrumbs directly). state of crumbs save to history
+  const { handleFolderClick } = useHistoryContext();
 
-  const selected = (crumb, path) => {
-    console.log(crumb);
-    const crumbs = path.split('/').filter((crumb) => crumb !== '');
+  const selected = (crumb, response) => {
+    console.log('Response:', response);
+    const crumbs = response[0].path.split('/').filter((crumb) => crumb !== '');
     console.log('Crumbs:', crumbs);
+
     setCrumbs(crumbs);
-    setState((prevState) => ({ ...prevState, currentFolderToLoad: crumb }));
+    setState((prevState) => ({ ...prevState, currentFolderToLoad: response[0] }));
+    handleFolderClick(response[0]);
   }
 
   // search functionality
@@ -210,23 +213,7 @@ function PopupStartWindow() {
 
               </li>
 
-              <li className="nav-item">
-                <nav aria-label="Back-Forward Folders Navigation">
-                  <ul className="pagination">
-                    <li className="page-item disabled">
-                      <a className="page-link py-0 px-1" href="#" tabIndex={-1}>
-                        <i className="bi bi-arrow-left-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
-                      </a>
-                    </li>
-
-                    <li className="page-item">
-                      <a className="page-link py-0 px-1" href="#">
-                        <i className="bi bi-arrow-right-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </li>
+              <BackForward state={state} setState={setState} setCrumbs={setCrumbs}/>
 
             </ul>
           </div>
@@ -242,7 +229,8 @@ function PopupStartWindow() {
           <div className="row">
             <div className='col'>
               <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults}
-                webSearch={webSearch} setWebSearch={setWebSearch} setWebSearchResults={setWebSearchResults} />
+                webSearch={webSearch} setWebSearch={setWebSearch} setWebSearchResults={setWebSearchResults}
+                state={state} />
             </div>
             <div className='col-2 px-0'>
               <Logout />
@@ -251,12 +239,11 @@ function PopupStartWindow() {
 
           {searchTerm ?
             <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults}
-              setState={setState} state={state} setCrumbs={setCrumbs} setHistoryCrumbs={setHistoryCrumbs}
+              setState={setState} state={state} setCrumbs={setCrumbs}
               webSearch={webSearch} setWebSearch={setWebSearch} webSearchResults={webSearchResults}/>
             :
             <div className="row folders-row ">
-              <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />
-
+              <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />              
               <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} setCrumbs={setCrumbs} crumbs={crumbs} />
               <BookmarksContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
               <ContextMenu

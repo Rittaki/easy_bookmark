@@ -29,3 +29,10 @@
     display: flex;
     flex-direction: column;
 }
+
+.web-search-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding-top: 10px;
+}

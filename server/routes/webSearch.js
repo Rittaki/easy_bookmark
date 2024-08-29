@@ -6,6 +6,6 @@ const {
 const router = express.Router();
 
 // handle web search requests
-router.post('/web_search', sendWebSearchRequest);
+router.post('/', sendWebSearchRequest);
 
 module.exports = router;
