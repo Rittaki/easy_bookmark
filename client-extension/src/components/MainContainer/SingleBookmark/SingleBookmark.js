@@ -28,8 +28,15 @@ function SingleBookmark(props) {
         // Handle single click (e.g., highlight bookmark)
     };
 
+    const handleDragStart = (e, bookmark, type) => {
+        console.log('DragStart', e);
+        e.dataTransfer.setData("type", type);
+        e.dataTransfer.setData("bookmark", JSON.stringify(bookmark));
+    }
+
     return (
         <div
+            draggable onDragStart={(e) => { handleDragStart(e, props.bookmark, 'bookmark') }}
             onContextMenu={(e) => { props.handleOnContextMenu(e, props.bookmark, "bookmark") }}
             tabIndex={0}
             className={`mt-1 list-group-item d-flex justify-content-between align-items-center single-bookmark

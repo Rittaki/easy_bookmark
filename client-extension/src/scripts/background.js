@@ -58,6 +58,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         result.then(res => sendResponse({ success: res }));
         return true;
     }
+    if (message.action === 'moveBookmark') {
+        console.log(message);
+        const bookmarkToUpdate = JSON.parse(message.bookmark);
+        const newFolder = JSON.parse(message.folder);
+        let result = moveBookmark(bookmarkToUpdate, newFolder);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
     if (message.action === 'deleteBookmark') {
         console.log(message);
         const bookmarkToDelete = message.bookmark;
@@ -77,6 +85,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const folderToUpdate = message.folder;
         const newFolderName = message.newName;
         let result = updateFolder(folderToUpdate, newFolderName);
+        result.then(res => sendResponse({ success: res }));
+        return true;
+    }
+    if (message.action === 'moveFolder') {
+        console.log(message);
+        const folderToUpdate = JSON.parse(message.folder);
+        const newParent = JSON.parse(message.newParent);
+        let result = moveFolder(folderToUpdate, newParent);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
@@ -297,6 +313,43 @@ async function updateBookmark(oldUrl, newTitle, newUrl) {
     }
 };
 
+async function moveBookmark(bookmarkToUpdate, newFolder) {
+    try {
+        console.log("Bookmark id:", bookmarkToUpdate._id);
+        const response = await fetch(`http://localhost:4000/api/bookmarks/${bookmarkToUpdate._id}`);
+        console.log(response);
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            const patchResponse = await fetch(`http://localhost:4000/api/bookmarks/${bookmarkToUpdate._id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    folder: newFolder.name,
+                    path: newFolder.path + `/${newFolder.name}`
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const patchJson = await patchResponse.json();
+
+            if (!response.ok) {
+                console.log(patchJson.error);
+                return patchJson.error;
+            }
+            if (response.ok) {
+                console.log("Folder updated (message from background)", patchJson);
+                return patchJson;
+            }
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 async function deleteBookmark(bookmark) {
     try {
         const response = await fetch(`http://localhost:4000/api/bookmarks/?title=${bookmark}`);
@@ -403,6 +456,43 @@ async function updateFolder(oldName, newName) {
         //     console.log("Folder added (message from background)", json);
         //     return json;
         // }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function moveFolder(folderToUpdate, newParent) {
+    try {
+        console.log("Folder id:", folderToUpdate._id);
+        const response = await fetch(`http://localhost:4000/api/folders/${folderToUpdate._id}`);
+        console.log(response);
+        if (!response.ok) {
+            console.log(json.error);
+            return json.error;
+        }
+        if (response.ok) {
+            const patchResponse = await fetch(`http://localhost:4000/api/folders/${folderToUpdate._id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    parentFolder: newParent.name,
+                    path: newParent.path + `/${newParent.name}`
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const patchJson = await patchResponse.json();
+
+            if (!response.ok) {
+                console.log(patchJson.error);
+                return patchJson.error;
+            }
+            if (response.ok) {
+                console.log("Folder updated (message from background)", patchJson);
+                return patchJson;
+            }
+        }
+
     } catch (error) {
         console.error(error);
     }

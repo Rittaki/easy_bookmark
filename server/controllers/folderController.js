@@ -114,6 +114,51 @@ const deleteFolder = async (req, res) => {
     res.status(200).json(folder);
 };
 
+const updateFolderAndDescendants = async (res, folderId) => {
+    try {
+        console.log('inside updateFolderAndDescendants');
+        if (!mongoose.Types.ObjectId.isValid(folderId)) {
+            return res.status(404).json({ error: 'ID not found' });
+        };
+
+        const folder = await Folder.findById(folderId);
+        if (!folder) {
+            return res.status(404).json({ error: 'Folder not found' });
+        }
+
+        // update bookmarks inside
+        const bookmarks = await Bookmark.find({ folder: folder.name });
+        console.log("bookmarks found:", bookmarks);
+        const bookmarksUpdateRes = await Bookmark.updateMany({ folder: folder.name }, { path: folder.path + "/" + folder.name });
+        if (!bookmarksUpdateRes) {
+            console.log(bookmarksUpdateRes);
+            return res.status(404).json({ error: bookmarksUpdateRes });
+        }
+        else {
+            console.log("Updated Bookmarks:", bookmarksUpdateRes);
+        }
+
+        // update folders (recurcively)
+        const folders = await Folder.find({ parentFolder: folder.name });
+        console.log("folders found:", folders);
+        const folderUpdateRes = await Folder.updateMany({ parentFolder: folder.name }, { path: folder.path + "/" + folder.name });
+        if (!folderUpdateRes) {
+            console.log(folderUpdateRes);
+            return res.status(404).json({ error: `Can't Update a folder ${folder.name}` });
+        }
+        else {
+            console.log("Updated folder:", folderUpdateRes);
+        }
+        for (const childFolder of folders) {
+            await updateFolderAndDescendants(res, childFolder._id);
+        }
+        return folder;
+    }
+    catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 // update a folder
 const updateFolder = async (req, res) => {
     const { id } = req.params;
@@ -129,28 +174,38 @@ const updateFolder = async (req, res) => {
         return res.status(404).json({ error: 'Folder not found' });
     }
     console.log("Old folder name from controller:", oldFolder.name);
-    // bookmarks update part
-    const bookmarks = await Bookmark.find({ folder: oldFolder.name });
-    console.log(bookmarks);
-    const bookmarksUpdateRes = await Bookmark.updateMany({ folder: oldFolder.name }, { folder: folderName });
-    if (!bookmarksUpdateRes) {
-        console.log(bookmarksUpdateRes);
-        return res.status(404).json({ error: bookmarksUpdateRes });
-    }
-    else {
-        console.log("Updated Bookmarks:", bookmarksUpdateRes);
-    }
-    // children folders update part
-    const childrenFolders = await Folder.find({ parentFolder: oldFolder.name });
-    console.log(childrenFolders);
-    const foldersUpdateRes = await Folder.updateMany({ parentFolder: oldFolder.name }, { parentFolder: folderName });
 
-    if (!foldersUpdateRes) {
-        console.log(foldersUpdateRes);
-        return res.status(404).json({ error: foldersUpdateRes });
+    if (req.body.parentFolder) {
+        // ADD CHECK THAT NEW PARENT FOLDER IS NOT A DESCEDENT OF CURRENT FOLDER (TO AVOID INFINITE LOOP)
+        await updateFolderAndDescendants(res, oldFolder._id);
     }
     else {
-        console.log("Updated Folders:", bookmarksUpdateRes);
+        // bookmarks update part
+        const bookmarks = await Bookmark.find({ folder: oldFolder.name });
+        console.log(bookmarks);
+        const bookmarksUpdateRes = await Bookmark.updateMany({ folder: oldFolder.name }, { folder: folderName, path: oldFolder.path + "/" + folderName });
+        if (!bookmarksUpdateRes) {
+            console.log(bookmarksUpdateRes);
+            return res.status(404).json({ error: bookmarksUpdateRes });
+        }
+        else {
+            console.log("Updated Bookmarks:", bookmarksUpdateRes);
+        }
+        // children folders update part
+        const childrenFolders = await Folder.find({ parentFolder: oldFolder.name });
+        console.log(childrenFolders);
+        const foldersUpdateRes = await Folder.updateMany({ parentFolder: oldFolder.name }, { parentFolder: folderName, path: oldFolder.path + "/" + folderName });
+
+        if (!foldersUpdateRes) {
+            console.log(foldersUpdateRes);
+            return res.status(404).json({ error: foldersUpdateRes });
+        }
+        else {
+            console.log("Updated Folders:", bookmarksUpdateRes);
+        }
+        for (const childFolder of childrenFolders) {
+            await updateFolderAndDescendants(res, childFolder._id);
+        }
     }
     res.status(200).json(oldFolder);
 };

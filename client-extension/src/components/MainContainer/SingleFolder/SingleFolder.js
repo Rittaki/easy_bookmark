@@ -65,17 +65,56 @@ function SingleFolder(props) {
         }
     };
 
-    // const handleDragStart = (e, folder, type) => {
-    //     e.dataTransfer.setData('type', type);
-    //     e.dataTransfer.setData('folder', JSON.stringify(folder));
-    // }
+    const handleDragStart = (e, folder, type) => {
+        console.log('DragStart', e);
+        e.dataTransfer.setData("type", type);
+        e.dataTransfer.setData("folder", JSON.stringify(folder));
+    }
+
+    const handleOnDrop = (event) => {
+        const type = event.dataTransfer.getData("type");
+
+        if (type === 'folder') {
+            const folder = event.dataTransfer.getData("folder");
+            console.log('dropped', folder, 'of type', type);
+            chrome.runtime.sendMessage({
+                action: "moveFolder",
+                folder: folder,
+                newParent: JSON.stringify(props.folder)
+            }, (response) => {
+                if (response.success) {
+                    console.log('Folder moved successfully', response.success);
+                    props.setState((prevState) => ({ ...prevState, reloadAfterAction: !prevState.reloadAfterAction }));
+                } else {
+                    console.log('Failed to move folder', response.error);
+                }
+            });
+        } else if (type === 'bookmark') {
+            const bookmark = event.dataTransfer.getData("bookmark");
+            console.log('dropped', bookmark, 'of type', type);
+            chrome.runtime.sendMessage({
+                action: "moveBookmark",
+                bookmark: bookmark,
+                folder: JSON.stringify(props.folder)
+            }, (response) => {
+                if (response.success) {
+                    console.log('Bookmark moved successfully', response.success);
+                    props.setState((prevState) => ({ ...prevState, reloadAfterAction: !prevState.reloadAfterAction }));
+                } else {
+                    console.log('Failed to move bookmark', response.error);
+                }
+            });
+        }
+    }
 
     return (
         <div className={`mt-2 me-2 card text-center single-folder ${isClicked ? 'highlighted' : ''}`} >
 
             <div
                 className="flex flex-col flex-1 justify-between p-2"
-                // draggable onDragStart={(e) => { handleDragStart(e, props.folder, 'folder') }}
+                onDrop={(e) => { handleOnDrop(e) }}
+                onDragOver={(e) => { e.preventDefault(); }}
+                draggable onDragStart={(e) => { handleDragStart(e, props.folder, 'folder') }}
                 tabIndex={0} onClick={onClickHandler} onBlur={handleBlur}
                 onContextMenu={(e) => { props.handleOnContextMenu(e, props.folder, 'folder') }}>
 

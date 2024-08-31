@@ -60,7 +60,7 @@ function PopupStartWindow() {
 
   const [currentBookmark, setCurrentBookmark] = useState({ id: "", title: "", url: "", path: "" });
 
-  const [currentFolder, setCurrentFolder] = useState({ id: "", name: "", path: "" });
+  const [currentFolder, setCurrentFolder] = useState({ id: "", name: "", parentFolder: "", linksNumber: 0, path: "" });
 
   // Context menu logic
   const contextMenuRef = useRef(null);
@@ -90,14 +90,14 @@ function PopupStartWindow() {
     }
     else if (itemType === 'folder') {
       setCurrentFolder(
-        (prevState) => ({ ...prevState, id: rightClickedItem._id, name: rightClickedItem.name, path: rightClickedItem.path }));
+        (prevState) => ({ ...prevState, id: rightClickedItem._id, name: rightClickedItem.name, parentFolder: rightClickedItem.parentFolder, linksNumber: rightClickedItem.linksNumber, path: rightClickedItem.path }));
     }
   };
 
   const resetContextMenu = () => {
     setContextMenu({ position: { x: 0, y: 0 }, toggled: false });
 
-    setCurrentFolder((prevState) => ({ ...prevState, id: "", name: "", path: "" }));
+    setCurrentFolder((prevState) => ({ ...prevState, id: "", name: "", parentFolder: "", linksNumber: 0, path: "" }));
     setCurrentBookmark((prevState) => ({ ...prevState, id: "", title: "", url: "", path: "" }));
   };
 
