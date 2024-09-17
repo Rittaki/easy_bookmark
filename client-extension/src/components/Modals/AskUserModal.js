@@ -1,8 +1,6 @@
-import './AskUserModal.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState, useEffect } from 'react';
-import ChooseFolderModal from './ChooseFolderModal';
+import './AskUserModal.css';
 
 function AskUserModal(props) {
 
@@ -12,7 +10,7 @@ function AskUserModal(props) {
             ...currentBookmark,
             url: newUrl,
         };
-        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark}))
+        props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }))
     }
 
     const updateOpenModal = (modalToOpen) => {
@@ -31,7 +29,9 @@ function AskUserModal(props) {
                 <p>You are going to save this url as a new bookmark. Press "Next" if you want to proceed</p>
                 <div className="folders-container">
                     <label htmlFor="urlInput" />
-                    <input type="text" readOnly className="rounded-3" id="urlInput" value={props.state.currentUrl} />
+                    <input
+                        style={{ height: '50px', width: '450px' }}
+                        type="text" readOnly className="rounded-3" id="urlInput" value={props.state.currentUrl} />
                     <span id="currentUrl"></span>
 
                 </div>

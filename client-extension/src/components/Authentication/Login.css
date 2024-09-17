@@ -20,3 +20,11 @@
     color: #777;
     width: 100%;
 }
+
+.start-button {
+    background-color: #b5def9 !important;
+}
+
+.start-button:hover {
+    background-color: #9bd5fb !important;
+}

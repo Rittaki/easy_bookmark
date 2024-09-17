@@ -23,14 +23,13 @@ function PopupStartWindow() {
   const { user } = useAuthContext();
   const [state, setState] = useState({
     chooseExistingFolder: false,
-    folderToDelete: null, bookmarkToDelete: null,
+    folderToDelete: { _id: "", name: "" }, bookmarkToDelete: null,
     folderToEdit: null, bookmarkToEdit: { title: "", url: "" },
     reloadAfterAction: false,
     isFolderEdited: false,
     currentClickedLocationFolder: "Home",
     currentClickedFolder: null, currentClickedBookmark: null,
-    // currentFolderToLoad: "Home",
-    currentFolderToLoad: {_id: "66a65fac5eddc59b4d8525f6", name: "Home", parentFolder: "", linksNumber: 2, path: "/"},
+    currentFolderToLoad: { _id: "66a65fac5eddc59b4d8525f6", name: "Home", parentFolder: "", linksNumber: 2, path: "/" },
     currentUrl: null, openModal: '', isAnotherFolder: false,
     lastBookmark: { title: '', url: '', folder: '', path: '', userId: user.uid },
     lastFolder: { name: '', parentFolder: '', linksNumber: 0, path: '', userId: user.uid }
@@ -122,14 +121,14 @@ function PopupStartWindow() {
 
   const handleDeleteCloseModal = () => {
     setShowDelete(false);
-    setState((prevState) => ({ ...prevState, folderToDelete: null }));
+    setState((prevState) => ({ ...prevState, folderToDelete: { _id: "", name: "" } }));
     setState((prevState) => ({ ...prevState, bookmarkToDelete: null }));
   };
   const handleDeleteShowModal = () => setShowDelete(true);
 
   const handleDelete = () => {
     console.log('Delete')
-    setState((prevState) => ({ ...prevState, folderToDelete: currentFolder.name }));
+    setState((prevState) => ({ ...prevState, folderToDelete: { _id: currentFolder.id, name: currentFolder.name } }));
     setState((prevState) => ({ ...prevState, bookmarkToDelete: currentBookmark.title }));
     console.log('Folder is: ' + state.folderToDelete);
     console.log('Bookmark is: ' + state.bookmarkToDelete);
@@ -161,7 +160,7 @@ function PopupStartWindow() {
   const handleClose = () => {
     setState((prevState) => ({ ...prevState, openModal: '' }));
     console.log("I'm from original close function");
-    setState((prevState) => ({ ...prevState, currentClickedLocationFolder: 'main' }));
+    setState((prevState) => ({ ...prevState, currentClickedLocationFolder: 'Home' }));
     setState((prevState) => ({ ...prevState, chooseExistingFolder: false }));
 
     const defaultBookmark = {
@@ -197,13 +196,13 @@ function PopupStartWindow() {
   }, []);
 
   return (
-    <div className="row">
+    <div className="row" style={{ backgroundColor: '#effdff' }}>
       <div className="col-4 nav-side">
         <div className="container">
           <div className="row buttons-row">
             <ul className="nav nav-pills">
               <li className="nav-item">
-                <button type="button" className="btn btn-primary nav-button" onClick={() => { setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' })) }}>New Bookmark</button>
+                <button type="button" className="btn btn-primary nav-button" onClick={() => { setState((prevState) => ({ ...prevState, openModal: 'ask-user-modal' })) }}><i className="bi bi-plus" />New Bookmark</button>
 
                 <AskUserModal show={state.openModal === 'ask-user-modal'} onHide={handleClose} setState={setState} state={state} />
                 <ChooseFolderModal show={state.openModal === 'choose-folder-modal'} onHide={handleClose} setState={setState} state={state} />
@@ -213,10 +212,11 @@ function PopupStartWindow() {
 
               </li>
 
-              <BackForward state={state} setState={setState} setCrumbs={setCrumbs}/>
+              <BackForward state={state} setState={setState} setCrumbs={setCrumbs} />
 
             </ul>
           </div>
+          <hr />
         </div>
         <div className="container folders-list-container">
 
@@ -224,15 +224,18 @@ function PopupStartWindow() {
 
         </div>
       </div>
-      <div className="col-8 right-side">
-        <div className="container">
+
+      <div className="col-1 vertical-line"></div>
+
+      <div className="col-7 right-side">
+        <div className="container" >
           <div className="row">
             <div className='col'>
               <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} setSearchResults={setSearchResults}
                 webSearch={webSearch} setWebSearch={setWebSearch} setWebSearchResults={setWebSearchResults}
                 state={state} />
             </div>
-            <div className='col-2 px-0'>
+            <div className='col-2 px-1' style={{ width: 'fit-content', paddingRight: '5px !important', display: 'flex', alignItems: 'flex-end' }}>
               <Logout />
             </div>
           </div>
@@ -240,10 +243,10 @@ function PopupStartWindow() {
           {searchTerm ?
             <SearchResultsContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchResults={searchResults}
               setState={setState} state={state} setCrumbs={setCrumbs}
-              webSearch={webSearch} setWebSearch={setWebSearch} webSearchResults={webSearchResults}/>
+              webSearch={webSearch} setWebSearch={setWebSearch} webSearchResults={webSearchResults} />
             :
-            <div className="row folders-row ">
-              <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />              
+            <div className="row folders-row " >
+              <Breadcrumbs crumbs={crumbs} selected={selected} state={state} />
               <FoldersContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} setCrumbs={setCrumbs} crumbs={crumbs} />
               <BookmarksContainer handleOnContextMenu={handleOnContextMenu} setState={setState} state={state} />
               <ContextMenu

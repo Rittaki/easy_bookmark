@@ -28,7 +28,7 @@ function Breadcrumbs(props) {
                     props.crumbs.map((crumb, index) => {
                         return (
                             <li className="breadcrumb-item" key={index}>
-                                <button className="btn btn-link p-0" onClick={() => updateBreadcrumbs(crumb)}>{crumb}</button>
+                                <button style={{color: '#38B6FF'}} className="btn btn-link p-0" onClick={() => updateBreadcrumbs(crumb)}>{crumb}</button>
                             </li>);
 
                     })

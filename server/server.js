@@ -41,31 +41,3 @@ mongoose.connect(process.env.MONGO_URI)
     .catch((err) => {
         console.log(err);
     });
-
-// // The main search function
-// var google_web_search = function(search, callback) {
-//     console.log('Searching the web for: ', search);
-//     var options = {
-//         method: 'GET',
-//         url: 'https://www.googleapis.com/customsearch/v1',
-//         qs: {
-//             q: search,
-//             key: process.env.GOOGLE_SEARCH_API_KEY,
-//             cx: process.env.SEARCH_ENGINE_ID,
-//         }
-//     };
-
-//     axios(options, function (error, response, body) {
-//         callback(error, body);
-//     });
-// };
-// app.get('/api/web_search', function (req, res) {
-//     google_web_search('recipe', function(error, body) {
-//       if (!error) {
-//          res.send(body);
-//       } else {
-//          throw new Error(error);
-//       }
-//     });
-//  });
-

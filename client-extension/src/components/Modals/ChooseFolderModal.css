@@ -8,6 +8,11 @@
     width: min-content;
 }
 
+.bookmark-folder > * { 
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 16px !important;
+}
+
 .another-folder-button {
     border: none;
     background-color: white;

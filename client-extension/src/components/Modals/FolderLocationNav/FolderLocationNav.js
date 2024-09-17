@@ -21,7 +21,7 @@ function FolderLocationNav(props) {
     }, []);
 
     return (
-        <div className="container location-container">
+        <div className="p-0 container location-container">
             <ul className="list-unstyled ps-0 mb-0">
                 {folders && folders.map((folder) => (
                     <FolderLocationNavItem key={folder._id} folder={folder} setState={props.setState} state={props.state}/>

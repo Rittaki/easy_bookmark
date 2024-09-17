@@ -2,7 +2,7 @@
 .single-folder {
     padding: 0 !important;
     width: 150px !important;
-    background-color: #def4f8 !important;
+    background-color: #effdff !important;
     align-items: center;
     border: transparent !important;
 }
@@ -13,11 +13,18 @@
 }
 
 .folder-details {
+    margin-top: -40px;
     width: 120px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }
 
 .folder-name {
     margin-bottom: 0px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 200;
+    color: rgba(0, 0, 0, .65);
 }
 
 .highlighted {

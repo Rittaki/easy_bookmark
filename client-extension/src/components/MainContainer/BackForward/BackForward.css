@@ -1,0 +1,10 @@
+.page-link {
+    color: #38B6FF !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.pagination {
+    box-shadow: 0 1px 4px 0 lightblue, 0 1px 2px 0 lightblue !important;
+    border-radius: 5px !important;
+}

@@ -1,7 +1,6 @@
-import './ChooseFolderLocationModal.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
+import './ChooseFolderLocationModal.css';
 import FolderLocationNav from './FolderLocationNav/FolderLocationNav';
 
 function ChooseFolderLocationModal(props) {
@@ -82,8 +81,6 @@ function ChooseFolderLocationModal(props) {
                         props.setState((prevState) => ({ ...prevState, openModal: 'choose-bookmark-name-modal', isAnotherFolder: true }));
                         updateFolderObject(props.state.currentClickedLocationFolder)
                     }
-                    // props.state.chooseExistingFolder ? updateBookmarkObject(props.state.currentClickedLocationFolder) : updateFolderObject(props.state.currentClickedLocationFolder);
-                    // updateFolderObject(props.state.currentClickedLocationFolder);
                 }}>Next</Button>
             </Modal.Footer>
 

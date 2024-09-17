@@ -28,7 +28,4 @@ router.delete('/:id', deleteBookmark);
 // UPDATE a bookmark
 router.patch('/:id', updateBookmark);
 
-// // SEARCH a bookmark
-// router.get('/search', searchBookmarks);
-
 module.exports = router;

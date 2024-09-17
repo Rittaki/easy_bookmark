@@ -1,12 +1,11 @@
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider } from "react-router-dom";
 import './App.css';
-import { React, Fragment } from "react";
-import { BrowserRouter, Routes, Route, Navigate, createBrowserRouter, createRoutesFromElements, RouterProvider, Outlet } from "react-router-dom"
-import PopupStartWindow from "./components/PopupStartWindow"
-import Register from "./components/Authentication/Register"
 import Login from './components/Authentication/Login';
 import Navbar from './components/Authentication/Navbar';
+import Register from "./components/Authentication/Register";
 import { useAuthContext } from './components/hooks/useAuthContext';
 import FoldersContainer from './components/MainContainer/FoldersContainer/FoldersContainer';
+import PopupStartWindow from "./components/PopupStartWindow";
 
 const Layout = () => {
   const { authIsReady, user } = useAuthContext();

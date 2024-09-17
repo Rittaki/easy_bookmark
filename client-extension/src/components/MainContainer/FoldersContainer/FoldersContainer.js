@@ -10,16 +10,10 @@ function FoldersContainer(props) {
     const { user } = useAuthContext();
 
     const handleFolderDoubleClick = () => {
-        // Load new folder logic here
         console.log('Double-clicked on folder!');
-        // props.setFolderToDelete(null);
-        props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
+        props.setState((prevState) => ({ ...prevState, folderToDelete: { _id: "", name: "" } }));
         props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
     };
-
-    // useEffect(() => {
-
-    // }, [props.state.isFolderEdited]);
 
     useEffect(() => {
         console.log("ASKING FOR FOLDER: " + props.state.currentFolderToLoad.name);
@@ -33,7 +27,6 @@ function FoldersContainer(props) {
                 console.log(`${props.state.currentFolderToLoad.name} folders fetched`, response.success);
                 setFolders(response.success);
                 setToLoad(false);
-                // updateCrumbs(props.state.currentFolderToLoad)
             };
         });
     }, [props.state.currentFolderToLoad, toLoad, props.state.reloadAfterAction]);

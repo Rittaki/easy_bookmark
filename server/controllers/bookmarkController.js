@@ -7,7 +7,7 @@ const getBookmarks = async (req, res) => {
     const reqQuery = req.query;
     console.log(reqQuery);
     
-    const bookmarks = await Bookmark.find(reqQuery).sort({ createdAt: -1 }); // add conditions inside brackets, for example: { folder: 'Education'} returns all bookmarks that are in Education folder
+    const bookmarks = await Bookmark.find(reqQuery).sort({ createdAt: -1 }); 
 
     res.status(200).json(bookmarks);
 };

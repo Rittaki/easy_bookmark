@@ -2,32 +2,34 @@ import './ChooseFolderModal.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useState, useEffect } from 'react';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 function ChooseFolderModal(props) {
     const [chosenFolder, setChosenFolder] = useState("");
     const [folderNames, setFolderNames] = useState([]);
+    const { user } = useAuthContext();
 
     // handle newFolder 
     const [newFolderSelected, setNewFolderSelected] = useState(false);
 
     useEffect(() => {
         if (props.show && (!folderNames.length)) {
-            // if array of names is empty, fetch, if not - not fetch. Make array empty when onHide and when save
             console.log("inside 'useEffect' method in choose folder modal", props.show, "folders are empty:", folderNames);
-            setFolderNames(["First", "CHeck"]);
-            // chrome.runtime.sendMessage({
-            //     action: "suggestFolders",
-            //     url: props.state.lastBookmark.url
-            // }, (response) => {
-            //     if (response.success) {
-            //         console.log('Folders fetched (message from client)', response);
-            //         setFolderNames(response.success.folder_names);
-            //         // setError(null);
-            //     }
-            //     else {
-            //         setError(json.error);
-            //     };
-            // });
+            // setFolderNames(["First", "CHeck"]);
+            chrome.runtime.sendMessage({
+                action: "suggestFolders",
+                url: props.state.lastBookmark.url,
+                userId: user.uid
+            }, (response) => {
+                if (response.success) {
+                    console.log('Folders fetched (message from client)', response);
+                    setFolderNames(response.success.folder_names);
+                    // setError(null);
+                }
+                else {
+                    setError(json.error);
+                };
+            });
         }
     }, [props.show]);
 
@@ -68,15 +70,6 @@ function ChooseFolderModal(props) {
         catch (error) {
             console.log('Error fetching folder by name', error);
         }
-        // chrome.runtime.sendMessage({
-        //     action: "getFolderByName",
-        //     folderName: chosenFolder
-        // }, (response) => {
-        //     if (response.success) {
-        //         console.log(`${chosenFolder} fetched`, response.success);
-        //         return response.success[0].path;
-        //     };
-        // });
     }
 
     const updateOpenModal = async (modalToOpen, isSuggestedFolder = false) => {
@@ -91,7 +84,7 @@ function ChooseFolderModal(props) {
 
     const closeModal = () => {
         props.onHide();
-        setFolderNames([]); // search how to get to this from main component when closing/saving modal or move it to main state in popupStartWindow
+        setFolderNames([]);
         setNewFolderSelected(false);
     };
 
@@ -109,21 +102,31 @@ function ChooseFolderModal(props) {
                     folderNames.length ?
                         <div className="folders-container" style={{ width: '100%' }}>
                             {folderNames.length && folderNames.map((folderName, index) => (
-                                <div key={index} className="bookmark-folder">
-                                    <label className="form-check-label" htmlFor={`folderRadioGrid${index}`} onClick={() => setNewFolderSelected(false)}>
-                                        <div className="d-flex flex-column flex-1 justify-between align-items-center p-4" style={{ width: "148px" }}>
-                                            <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                                            <section className='d-grid' style={{ maxHeight: "fit-content", justifyItems: "center" }}>
-                                                <strong className="fw-semibold text-truncate d-inline-block" style={{ maxWidth: '100%' }}>{folderName}</strong>
-                                                <p className='mb-0'>10 links</p>
-                                            </section>
-                                            <input className="form-check-input" type="radio" name="folderRadioGrid"
-                                                id={`folderRadioGrid${index}`}
-                                                value={folderName} defaultChecked={folderName === chosenFolder ? true : false}
-                                                onChange={handleChange} />
-                                        </div>
-                                    </label>
-                                </div>
+                                folderName === 'none' ?
+                                    <div></div> :
+                                    <div key={index} className="bookmark-folder">
+                                        <label className="form-check-label" htmlFor={`folderRadioGrid${index}`} onClick={() => setNewFolderSelected(false)}>
+                                            <div className="d-flex flex-column flex-1 justify-between align-items-center p-4" style={{ width: "148px" }}>
+                                                <img src="resources/Folder1.png" alt="folder img" loading="lazy"
+                                                    width="160vh" height="160vh"
+                                                    style={{ marginTop: '-10px' }} />
+                                                <section className='d-grid' style={{ maxHeight: "fit-content", justifyItems: "center" }}>
+                                                    <p className="text-truncate d-inline-block"
+                                                        style={{
+                                                            maxWidth: '100%', marginTop: '-40px'
+                                                        }}>
+                                                        {folderName}
+                                                    </p>
+                                                    {/**<p className='mb-0'>10 links</p>**/}
+                                                </section>
+                                                <input className="form-check-input" type="radio" name="folderRadioGrid"
+                                                    style={{ marginTop: '-10px' }}
+                                                    id={`folderRadioGrid${index}`}
+                                                    value={folderName} defaultChecked={folderName === chosenFolder ? true : false}
+                                                    onChange={handleChange} />
+                                            </div>
+                                        </label>
+                                    </div>
                             ))}
 
                             <div className="bookmark-folder">
@@ -135,11 +138,12 @@ function ChooseFolderModal(props) {
                                         props.setState((prevState) => ({ ...prevState, chooseExistingFolder: false }))
                                     }}>
                                     <div className="d-flex flex-column flex-1 justify-between align-items-center p-4" style={{ width: "148px" }}>
-                                        <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
-                                        <section >
-                                            <strong className="fw-semibold text-truncate d-inline-block opacity-50" style={{ maxWidth: '100%' }}>Create new folder...</strong>
-                                            {/** <h6 className='opacity-50'>Create new folder...</h6>
-                                            <Button variant="info" onClick={() => { updateOpenModal('choose-folder-name-modal') }}>Click</Button>**/}
+                                        <img src="resources/Folder1.png" alt="folder img" loading="lazy"
+                                            width="160vh" height="160vh"
+                                            style={{ marginTop: '-10px' }} />
+                                        <section style={{ marginTop: '-17px' }}>
+                                            <p className="text-truncate d-inline-block opacity-50"
+                                                style={{ maxWidth: '100%', marginTop: '-40px', fontWeight: '100 !important' }}>Create new folder...</p>
                                         </section>
                                     </div>
                                 </label>

@@ -1,13 +1,13 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useState, useEffect } from 'react';
 
 function DeleteModal(props) {
 
     const handleDeleteFolder = () => {
         chrome.runtime.sendMessage({
             action: "deleteFolder",
-            folder: props.state.folderToDelete,
+            folderId: props.state.folderToDelete._id,
+            folder: props.state.folderToDelete.name
         }, (response) => {
             if (response.success) {
                 console.log("Folder deleted successfully (from react)");
@@ -32,17 +32,17 @@ function DeleteModal(props) {
     };
 
     return (
-        props.state.folderToDelete ? (
+        props.state.folderToDelete.name ? (
             <Modal show={props.show} onHide={props.onHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>Delete a folder</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete this folder? {props.state.folderToDelete}</Modal.Body>
+                <Modal.Body>Are you sure you want to delete this folder? <b>{props.state.folderToDelete.name}</b></Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.onHide}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleDeleteFolder}>
+                    <Button variant="success" onClick={handleDeleteFolder}>
                         Yes
                     </Button>
                 </Modal.Footer>
@@ -52,12 +52,12 @@ function DeleteModal(props) {
             <Modal.Header closeButton>
                 <Modal.Title>Delete a bookmark</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Are you sure you want to delete this bookmark? {props.state.bookmarkToDelete}</Modal.Body>
+            <Modal.Body>Are you sure you want to delete this bookmark? <b>{props.state.bookmarkToDelete}</b></Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>
                     Cancel
                 </Button>
-                <Button variant="primary" onClick={handleDeleteBookmark}>
+                <Button variant="success" onClick={handleDeleteBookmark}>
                     Yes
                 </Button>
             </Modal.Footer>

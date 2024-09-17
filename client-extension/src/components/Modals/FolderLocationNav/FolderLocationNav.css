@@ -1,6 +1,7 @@
 .location-container {
-    height: 200px;
+    height: 260px;
     overflow-y: scroll;
-    background-color: #def4f8;
+    background-color: #ddf4f8;
     width: 466px;
+    box-shadow: 0 1px 4px 0 lightblue, 0 1px 2px 0 lightblue !important;
 }

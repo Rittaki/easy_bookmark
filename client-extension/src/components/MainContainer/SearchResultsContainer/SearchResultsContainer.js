@@ -1,11 +1,9 @@
-import { useState, Fragment } from "react";
-import "./SearchResultsContainer.css"
 import { useHistoryContext } from "../../hooks/useHistoryContext";
+import "./SearchResultsContainer.css";
 
 function SearchResultsContainer(props) {
     const { backStack, forwardStack, handleFolderClick } = useHistoryContext();
     const splitRegex = new RegExp(props.searchTerm, "i");
-    // const match = props.searchResults.match(splitRegex);
 
     const openInNewTab = (url) => {
         chrome.tabs.create({
@@ -20,9 +18,7 @@ function SearchResultsContainer(props) {
         if (crumbs.length > 0) {
             crumbs.pop();
         }
-        // crumbs = crumbs.slice(0, -1);
         props.setCrumbs(crumbs);
-        // props.setSearchTerm(null);
         chrome.runtime.sendMessage({
             action: "getFolderByName",
             folderName: bookmark.folder
@@ -32,36 +28,35 @@ function SearchResultsContainer(props) {
                 updateCurrentFolderToLoad(response.success[0]);
             };
         });
-        // updateCurrentFolderToLoad(bookmark.folder);
-        
-        // props.setSearchTerm("");
     };
 
     const updateCurrentFolderToLoad = (newFolder) => {
-        // const newFolder = props.state.currentFolderToLoad
-        // newFolder.name = folder;
         props.setState((prevState) => ({ ...prevState, currentFolderToLoad: newFolder }));
         handleFolderClick(newFolder);
         props.setSearchTerm("");
     };
-
-
-    // if serach in web checked, then create condition that load another div that maps search results (not like bookmarks)
 
     return (
         <div className="search-results-container">
 
             {props.webSearch ?
                 <div className="list-group list-group-flush web-search-results">
-                    Web search is ON
+                    {!props.webSearchResults ?
+                        <div style={{ marginTop: '150px' }} className="d-flex justify-content-center">
+                            <div className="spinner-grow"
+                                style={{ width: '200px', height: '200px', color: '#c0edf4' }}
+                                role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div> : <div></div>}
                     {
                         props.webSearchResults && props.webSearchResults.map((result, index) => (
                             <div key={index} className="mt-1 list-group-item d-flex justify-content-between align-items-left web-search-result">
-                                <a href={result.link} target="_blank" rel="noreferrer">
-                                    <h5 dangerouslySetInnerHTML={{ __html: result.htmlTitle }}></h5>
+                                <a href={result.link} target="_blank" rel="noreferrer" id="result-link">
+                                    <h6 className="m-0" dangerouslySetInnerHTML={{ __html: result.htmlTitle }}></h6>
                                 </a>
                                 <small dangerouslySetInnerHTML={{ __html: result.htmlFormattedUrl }}></small>
-                                <p className="mb-0" dangerouslySetInnerHTML={{ __html: result.htmlSnippet }}></p>
+                                <p className="mb-0" id="result-description" dangerouslySetInnerHTML={{ __html: result.htmlSnippet }}></p>
 
                             </div>
                         ))
@@ -78,7 +73,7 @@ function SearchResultsContainer(props) {
                                 {bookmark.title.split(splitRegex).map((word, index) => (
                                     index > 0 ? (
                                         <span key={index}>
-                                            <span style={{ color: '#000000', fontWeight: 700 }}>
+                                            <span style={{ color: '#0C7FDA', fontWeight: 700 }}>
                                                 {bookmark.title.match(splitRegex)[0] || ''}
                                             </span>
                                             {word}
@@ -93,7 +88,7 @@ function SearchResultsContainer(props) {
                                 {bookmark.url.split(splitRegex).map((word, index) => (
                                     index > 0 ? (
                                         <span key={index}>
-                                            <span style={{ color: '#000000', fontWeight: 700 }}>
+                                            <span style={{ color: '#0C7FDA', fontWeight: 700 }}>
                                                 {bookmark.url.match(splitRegex)[0] || ''}
                                             </span>
                                             {word}
@@ -103,7 +98,7 @@ function SearchResultsContainer(props) {
                                     )
                                 ))}
                             </small>
-                            <i className="fs-5 folder-link-icon bi bi-folder-symlink text-primary"
+                            <i className="fs-5 folder-link-icon bi bi-folder-symlink"
                                 onClick={() => handleFolderOpen(bookmark)}></i>
                         </div>
                     ))}

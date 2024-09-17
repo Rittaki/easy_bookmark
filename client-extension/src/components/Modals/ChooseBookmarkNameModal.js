@@ -1,9 +1,7 @@
-import './ChooseBookmarkNameModal.css';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { useState, useEffect } from 'react';
+import './ChooseBookmarkNameModal.css';
 
 function ChooseBookmarkNameModal(props) {
     const [chosenTitle, setChosenTitle] = useState("");
@@ -17,22 +15,21 @@ function ChooseBookmarkNameModal(props) {
 
     useEffect(() => {
         if (props.show && (!titles.length)) {
-            // if array of names is empty, fetch, if not - not fetch. Make array empty when onHide and when save
             console.log("inside 'useEffect' method in choose name modal", props.show, "titles are empty:", titles);
-            setTitles(["First", "Second", "Third"]);
-            // chrome.runtime.sendMessage({
-            //     action: "generateTitles",
-            //     url: props.state.lastBookmark.url
-            // }, (response) => {
-            //     if (response.success) {
-            //         console.log('Titles fetched (message from client)', response);
-            //         setTitles(response.success.titles);
-            //         setError(null);
-            //     }
-            //     else {
-            //         setError(json.error);
-            //     };
-            // });
+            // setTitles(["First", "Second", "Third"]);
+            chrome.runtime.sendMessage({
+                action: "generateTitles",
+                url: props.state.lastBookmark.url
+            }, (response) => {
+                if (response.success) {
+                    console.log('Titles fetched (message from client)', response);
+                    setTitles(response.success.titles);
+                    setError(null);
+                }
+                else {
+                    setError(json.error);
+                };
+            });
         }
     }, [props.show]);
 
@@ -61,21 +58,11 @@ function ChooseBookmarkNameModal(props) {
                     setError(json.error);
                 };
             })
-
-            // console.log("after sending a folder");
-            // const defaultFolder = {
-            //     name: "",
-            //     parentFolder: "",
-            //     linksNumber: 0,
-            // };
-            // props.setState((prevState) => ({ ...prevState, lastFolder: defaultFolder }));
-
             props.setState((prevState) => ({ ...prevState, isAnotherFolder: false }));
         }
     };
 
     const handleBookmarkSave = (e) => {
-        // props.onHide();
         chrome.runtime.sendMessage({
             action: "addBookmark",
             bookmark: props.state.lastBookmark
@@ -88,14 +75,6 @@ function ChooseBookmarkNameModal(props) {
                 setError(json.error);
             };
         })
-
-        // console.log("after sending a bookmark");
-        // const defaultBookmark = {
-        //     title: "",
-        //     url: "",
-        //     folder: "",
-        // };
-        // props.setState((prevState) => ({ ...prevState, lastBookmark: defaultBookmark }));
     };
 
     useEffect(() => {
@@ -111,28 +90,23 @@ function ChooseBookmarkNameModal(props) {
                 setTitles([]);
                 setOtherSelected(false);
             }
+            props.setState((prevState) => ({ ...prevState, reloadAfterAction: !prevState.reloadAfterAction }));
         };
         handleSave();
     }, [toSave]);
 
     const updateBookmarkObject = (bookmarkTitle) => {
-        // props.onHide();
         const currentBookmark = props.state.lastBookmark;
         const updatedBookmark = {
             ...currentBookmark,
             title: bookmarkTitle
-            // timestamp: Date().toString()
         };
         props.setState((prevState) => ({ ...prevState, lastBookmark: updatedBookmark }));
-        // setToSave(true);
     };
 
     const updateOpenModal = (modalToOpen) => {
         props.setState((prevState) => ({ ...prevState, openModal: modalToOpen }))
         updateBookmarkObject(chosenTitle);
-        // setInputValue("");
-        // setOtherSelected(false);
-        // updateBookmarkObject(inputValue);
     };
 
     const closeModal = () => {
@@ -162,8 +136,7 @@ function ChooseBookmarkNameModal(props) {
                                             value={title} defaultChecked={title === chosenTitle ? true : false}
                                             onChange={handleChange} />
                                         <label className="list-group-item py-3 px-3 ms-3 new-title" htmlFor={`listGroupRadioGrid${index}`} onClick={() => setOtherSelected(false)}>
-                                            <strong className="fw-semibold text-truncate d-inline-block" style={{ maxWidth: '100%' }}>{title}</strong>
-                                            {/**<span className="d-block small opacity-75">With support text underneath to add more detail</span>**/}
+                                            <p className="text-truncate d-inline-block" style={{ maxWidth: '100%', fontFamily: 'Poppins' }}>{title}</p>
                                         </label>
                                     </div>
                                 ))}
@@ -180,16 +153,17 @@ function ChooseBookmarkNameModal(props) {
 
                                         {otherSelected ?
                                             <div className="input-group">
-                                                <input type="text" className="fw-semibold"
+                                                <input type="text"
+                                                    style={{ fontFamily: 'Poppins', backgroundColor: '#f2fbfd' }}
                                                     id="otherInput"
                                                     value={inputValue}
                                                     onChange={handleInputChange}
                                                     placeholder="Type here your option" />
                                             </div>
-                                            : <strong className="fw-semibold opacity-25 text-truncate d-inline-block"
-                                                style={{ maxWidth: '100%' }}>
+                                            : <p className="opacity-25 text-truncate d-inline-block"
+                                                style={{ maxWidth: '100%', fontFamily: 'Poppins', color: '#5fd8f6' }}>
                                                 {inputValue ? `${inputValue}` : "Double-click to enter your option"}
-                                            </strong>}
+                                            </p>}
 
                                     </label>
                                 </div>

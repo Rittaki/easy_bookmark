@@ -1,19 +1,30 @@
 .signup {
-    max-width: 360px;
-    margin: 60px auto;
-    padding: 20px;
-  }
-  .signup label {
-    display: block;
-    margin: 30px auto;
-  }
-  .signup span {
-    display: block;
-    margin-bottom: 6px;
-  }
-  .signup input {
-    padding: 8px 6px;
-    font-size: 1em;
-    color: #777;
-    width: 100%;
-  }
+  max-width: 360px;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+.signup label {
+  display: block;
+  margin: 30px auto;
+}
+
+.signup span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.signup input {
+  padding: 8px 6px;
+  font-size: 1em;
+  color: #777;
+  width: 100%;
+}
+
+.start-button {
+  background-color: #b5def9 !important;
+}
+
+.start-button:hover {
+  background-color: #9bd5fb !important;
+}

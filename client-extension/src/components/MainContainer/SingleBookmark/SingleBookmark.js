@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import "./SingleBookmark.css"
+import { useState } from "react";
+import "./SingleBookmark.css";
 
 function SingleBookmark(props) {
     const [isClicked, setIsClicked] = useState(false);
@@ -25,7 +25,6 @@ function SingleBookmark(props) {
         setIsClicked(true);
         console.log('Clicked bookmark once')
         updateCurrentBookmark(props.bookmark.title);
-        // Handle single click (e.g., highlight bookmark)
     };
 
     const handleDragStart = (e, bookmark, type) => {

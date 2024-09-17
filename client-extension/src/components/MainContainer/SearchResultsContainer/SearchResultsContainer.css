@@ -1,10 +1,17 @@
 .bookmark-url {
     width: 250px;
+    color: #0C7FDA !important;
 }
 
 .bookmark-title {
+    color: #0C7FDA !important;
     width: 150px;
     margin: 0px;
+}
+
+.search-bookmark {
+    background-color: white !important;
+    box-shadow: 0 1px 4px 0 lightblue, 0 1px 2px 0 lightblue !important;
 }
 
 .search-bookmark:hover {
@@ -23,6 +30,7 @@
 .folder-link-icon {
     width: 20px;
     height: 20px;
+    color: #0C7FDA;
 }
 
 .search-results-container {
@@ -35,4 +43,18 @@
     flex-direction: column;
     align-items: flex-start !important;
     padding-top: 10px;
+    background-color: white !important;
+    box-shadow: 0 1px 4px 0 lightblue, 0 1px 2px 0 lightblue !important;
+}
+
+#result-link {
+    text-decoration: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 16px !important;
+}
+
+#result-description {
+    padding-top: 5px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
 }

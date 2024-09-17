@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 
 export const HistoryContext = createContext();
 
@@ -38,7 +38,7 @@ export const HistoryContextProvider = ({ children }) => {
     };
 
     return (
-        <HistoryContext.Provider value={{ backStack, forwardStack, handleFolderClick, handleBack, handleForward }}>
+        <HistoryContext.Provider value={{ backStack, setBackStack, forwardStack, handleFolderClick, handleBack, handleForward }}>
             {children}
         </HistoryContext.Provider>
     );

@@ -1,3 +1,5 @@
 .btn-link {
     text-decoration: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 16px !important;
 }

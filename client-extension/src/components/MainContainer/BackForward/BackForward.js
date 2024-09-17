@@ -15,7 +15,6 @@ function BackForward(props) {
     }
 
     useEffect(() => {
-        // console.log("I'M INSIDE THE BACK USE EFFECT");
         if (backStack.length > 1) {
             setBackButton(true);
         }
@@ -25,7 +24,6 @@ function BackForward(props) {
     }, [backStack]);
 
     useEffect(() => {
-        // console.log("I'M INSIDE THE FORWARD USE EFFECT");
         if (forwardStack.length > 0) {
             setForwardButton(true);
         }
@@ -52,13 +50,13 @@ function BackForward(props) {
                 <ul className="pagination">
                     <li className={`page-item ${backButton ? '' : 'disabled'}`}>
                         <button className="page-link py-0 px-1" onClick={handleClickBack}>
-                            <i className="bi bi-arrow-left-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
+                            <i className="bi bi-arrow-left-circle" style={{ fontSize: '25px', color: '#38B6FF' }}></i>
                         </button>
                     </li>
 
                     <li className={`page-item ${forwardButton ? '' : 'disabled'}`}>
                         <button className="page-link py-0 px-1" onClick={handleClickForward}>
-                            <i className="bi bi-arrow-right-circle" style={{ fontSize: '25px', color: 'cornflowerblue' }}></i>
+                            <i className="bi bi-arrow-right-circle" style={{ fontSize: '25px', color: '#38B6FF' }}></i>
                         </button>
                     </li>
                 </ul>

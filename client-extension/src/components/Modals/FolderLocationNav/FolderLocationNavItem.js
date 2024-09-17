@@ -29,12 +29,16 @@ function FolderLocationNavItem(props) {
 
     return (
         <li className="mb-1 mt-1">
-            <button className="btn btn-toggle-location align-items-center collapsed focus-ring" data-bs-toggle="collapse" data-bs-target={"#location-" + props.folder.name.split(" ").join("") + "-collapse"} aria-expanded="false" onFocus={() => { setToLoad(true); updateCurrentLocationFolder(props.folder.name); }}>
+            <button className="ps-4 btn btn-toggle-location align-items-center collapsed"
+                id='folder-list-item'
+                data-bs-toggle="collapse" data-bs-target={"#location-" + props.folder.name.split(" ").join("") + "-collapse"}
+                aria-expanded="false"
+                onFocus={() => { setToLoad(true); updateCurrentLocationFolder(props.folder.name); }}>
                 {props.folder.name}
             </button>
             <ul className="list-unstyled ps-3 collapse" id={"location-" + props.folder.name.split(" ").join("") + "-collapse"}>
                 {folders && folders.map((folder) => (
-                    <FolderLocationNavItem key={folder._id} folder={folder} setState={props.setState} state={props.state}/>
+                    <FolderLocationNavItem key={folder._id} folder={folder} setState={props.setState} state={props.state} />
                 ))}
             </ul>
         </li>

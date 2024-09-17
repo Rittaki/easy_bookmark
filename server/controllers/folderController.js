@@ -2,18 +2,6 @@ const Folder = require('../models/Folder');
 const Bookmark = require('../models/Bookmark');
 const mongoose = require('mongoose');
 
-const func = async () => {
-    // const res = await Bookmark.updateMany(
-    //     { folder: "Travel" },
-    //     {
-    //         $set: { userId: "nJMBz5aTXCRCW7tQlK5vdMJyl2P2" },
-    //     },
-    //     { multi: true }
-    // );
-    // console.log(res);
-};
-// func();
-
 // get all folders
 const getFolders = async (req, res) => {
     const reqQuery = req.query;
@@ -23,15 +11,6 @@ const getFolders = async (req, res) => {
 
     res.status(200).json(folders);
 };
-
-// // get folders by query
-// const getFoldersByQuery = async (req, res) => {
-//     const reqQuery = req.query;
-//     console.log(reqQuery);
-//     const folders = await Folder.find(reqQuery);
-
-//     res.status(200).json(folders);
-// };
 
 // get a single folder
 const getFolder = async (req, res) => {
@@ -213,7 +192,6 @@ const updateFolder = async (req, res) => {
 module.exports = {
     getFolder,
     getFolders,
-    // getFoldersByQuery,
     createFolder,
     deleteFolder,
     updateFolder

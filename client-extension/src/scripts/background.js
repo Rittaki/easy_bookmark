@@ -1,19 +1,5 @@
 chrome.contextMenus.removeAll();
 
-// chrome.contextMenus.create({
-//     id: "edit",
-//     title: "Edit",
-//     contexts: ["page"],
-//     documentUrlPatterns: ["chrome-extension://cfphhjfddchkkhgpejnnniiclphbcjie/popup.html"]
-// });
-
-// chrome.contextMenus.onClicked.addListener((info, tab) => {
-//     if (info.menuItemId === "edit") {
-//       // Check if the right-clicked element is an anchor with the desired class
-
-//     }
-//   });
-
 chrome.runtime.onInstalled.addListener(async () => {
     console.log('Installed EasyBookmark');
 });
@@ -99,7 +85,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'deleteFolder') {
         console.log(message);
         const folderToDelete = message.folder;
-        let result = deleteFolder(folderToDelete);
+        const folderIdToDelete = message.folderId;
+        let result = deleteFolder(folderToDelete, folderIdToDelete);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
@@ -120,7 +107,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'suggestFolders') {
         console.log(message);
         const url = message.url;
-        let result = suggestFolders(url);
+        const userId = message.userId;
+        let result = suggestFolders(url, userId);
         result.then(res => sendResponse({ success: res }));
         return true;
     }
@@ -194,14 +182,11 @@ async function createUser(user) {
 }
 // CRUD Operations
 
-// works somehow
 async function fetchFolders(parentFolder, userId) {
     try {
         const response = await fetch(`http://localhost:4000/api/folders/?parentFolder=${parentFolder}&userId=${userId}`);
-        // console.log(response);
         if (response.ok) {
             const json = await response.json();
-            // console.log(json);
             return json;
         }
     } catch (error) {
@@ -229,7 +214,6 @@ async function fetchBookmarks(folder, userId) {
         console.log(response);
         if (response.ok) {
             const json = await response.json();
-            // console.log(json);
             return json;
         }
     } catch (error) {
@@ -251,8 +235,9 @@ async function searchBookmarks(query, userId) {
     }
 }
 
-async function addBookmark(newBookmark) {
+async function addBookmark(newBookmark) { 
     try {
+        console.log("INSIDE ADD BOOKMARK");
         const response = await fetch("http://localhost:4000/api/bookmarks", {
             method: "POST",
             body: JSON.stringify(newBookmark),
@@ -416,9 +401,6 @@ async function updateFolder(oldName, newName) {
         if (response.ok) {
             const json = await response.json();
             console.log(json[0]);
-            // let folderToUpdate = json[0];
-            // folderToUpdate['name'] = newName;
-            // console.log(folderToUpdate);
             const patchResponse = await fetch(`http://localhost:4000/api/folders/${json[0]._id}`, {
                 method: "PATCH",
                 body: JSON.stringify({
@@ -439,23 +421,6 @@ async function updateFolder(oldName, newName) {
                 return patchJson;
             }
         }
-        // const response = await fetch("http://localhost:4000/api/folders", {
-        //     method: "POST",
-        //     body: JSON.stringify(oldName),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // });
-        // const json = await response.json();
-
-        // if (!response.ok) {
-        //     console.log(json.error);
-        //     return json.error;
-        // }
-        // if (response.ok) {
-        //     console.log("Folder added (message from background)", json);
-        //     return json;
-        // }
     } catch (error) {
         console.error(error);
     }
@@ -498,9 +463,9 @@ async function moveFolder(folderToUpdate, newParent) {
     }
 };
 
-async function deleteFolder(folder) {
+async function deleteFolder(folder, folderId) {
     try {
-        const response = await fetch(`http://localhost:4000/api/folders/?name=${folder}`);
+        const response = await fetch(`http://localhost:4000/api/folders/${folderId}`);
         console.log(response);
         if (!response.ok) {
             console.log(json.error);
@@ -508,8 +473,8 @@ async function deleteFolder(folder) {
         }
         if (response.ok) {
             const json = await response.json();
-            console.log(json[0]);
-            const deleteResponse = await fetch(`http://localhost:4000/api/folders/${json[0]._id}`, {
+            console.log(json);
+            const deleteResponse = await fetch(`http://localhost:4000/api/folders/${folderId}`, {
                 method: "DELETE"
             });
             const deleteJson = await deleteResponse.json();
@@ -577,11 +542,11 @@ async function generateFolders(url) {
     }
 }
 
-async function suggestFolders(url) {
+async function suggestFolders(url, userId) {
     try {
         const response = await fetch("http://localhost:4000/api/chatgpt/suggest_folder", {
             method: "POST",
-            body: JSON.stringify({ url }),
+            body: JSON.stringify({ url, userId }),
             headers: {
                 'Content-Type': 'application/json'
             }

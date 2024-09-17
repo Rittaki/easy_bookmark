@@ -84,9 +84,9 @@ function EditModal(props) {
                     <Button variant="secondary" onClick={props.onHide}>
                         Cancel
                     </Button>
-                    <Button variant="primary"
+                    <Button variant="success"
                         onClick={handleEditFolder}>
-                        Yes
+                        Save
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -115,8 +115,8 @@ function EditModal(props) {
                     <Button variant="secondary" onClick={props.onHide}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleEditBookmark}>
-                        Yes
+                    <Button variant="success" onClick={handleEditBookmark}>
+                        Save
                     </Button>
                 </Modal.Footer>
             </Modal>

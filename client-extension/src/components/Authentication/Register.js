@@ -104,7 +104,7 @@ function Register() {
                     onChange={handleChange}
                 />
             </label>
-            {!isPending && <button className="btn">Sign up</button>}
+            {!isPending && <button className="btn start-button">Sign up</button>}
             {isPending && <button className="btn" disabled>Loading...</button>}
             {error && <p>{error}</p>}
         </form>

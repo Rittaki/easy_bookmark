@@ -1,12 +1,15 @@
 
 .navbar {
+    height: 45px !important;
     width: 100%;
-    background: #effaf0;
-    padding: 20px 10px;
+    background: #b5def9;
+    padding: 0 !important;
     box-sizing: border-box;
 }
 
 .navbar ul {
+    padding-left: 50px !important;
+    height: inherit !important;
     list-style-type: none;
     display: flex;
     margin: 0 auto;
@@ -21,12 +24,24 @@
     font-size: 1.2em;
 }
 
-.navbar button,
-.navbar a {
+.navbar button {
     margin-left: 16px;
+    margin-right: 16px;
 }
 
 .navbar a {
     color: #333;
     text-decoration: none;
+}
+
+.nav-link {
+    display: flex !important;
+    height: inherit !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    align-items: center !important;
+}
+
+.nav-link:hover {
+    background-color: #9bd5fb !important;
 }

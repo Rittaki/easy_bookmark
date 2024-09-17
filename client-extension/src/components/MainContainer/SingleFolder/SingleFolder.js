@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import "./SingleFolder.css"
+import { useState } from "react";
 import { useHistoryContext } from "../../hooks/useHistoryContext";
+import "./SingleFolder.css";
 
 
 function SingleFolder(props) {
@@ -19,21 +19,6 @@ function SingleFolder(props) {
         props.setCrumbs(crumbs);
     }
 
-    // useEffect(() => {
-    //     if (toLoad) {
-    //         chrome.runtime.sendMessage({
-    //             action: "getFolders",
-    //             folder: props.folder.name
-    //         }, (response) => {
-    //             if (response.success) {
-    //                 console.log(`${props.folder.name} folders fetched`, response.success);
-    //                 props.setFolders(response.success);
-    //                 setToLoad(false);
-    //             };
-    //         });
-    //     };
-    // }, [toLoad]);
-
     const updateCurrentFolder = (folder) => {
         props.setState((prevState) => ({ ...prevState, currentClickedFolder: folder }));
     };
@@ -45,19 +30,15 @@ function SingleFolder(props) {
     let timer = null;
 
     const onClickHandler = (event) => {
-        // event.preventDefault();
         setIsClicked(true);
         clearTimeout(timer);
         if (event.detail === 1) {
             console.log('Clicked once')
             updateCurrentFolder(props.folder.name);
-            // Handle single click (e.g., highlight folder)
         } else if (event.detail === 2) {
-            // Handle double click (e.g., load new folder)
-            // setToLoad(true);
             updateCurrentFolderToLoad(props.folder);
             updateCrumbs(props.folder.path);
-            props.setState((prevState) => ({ ...prevState, folderToDelete: null }));
+            props.setState((prevState) => ({ ...prevState, folderToDelete: { _id: "", name: "" } }));
             props.setState((prevState) => ({ ...prevState, currentClickedFolder: null }));
             timer = setTimeout(props.onDoubleClick, 200);
             const folderToHistory = props.folder;
@@ -111,18 +92,26 @@ function SingleFolder(props) {
         <div className={`mt-2 me-2 card text-center single-folder ${isClicked ? 'highlighted' : ''}`} >
 
             <div
-                className="flex flex-col flex-1 justify-between p-2"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    width: '150px',
+                    height: '150px'
+                }}
+                className="flex flex-col flex-1 justify-between p-0"
                 onDrop={(e) => { handleOnDrop(e) }}
                 onDragOver={(e) => { e.preventDefault(); }}
                 draggable onDragStart={(e) => { handleDragStart(e, props.folder, 'folder') }}
                 tabIndex={0} onClick={onClickHandler} onBlur={handleBlur}
                 onContextMenu={(e) => { props.handleOnContextMenu(e, props.folder, 'folder') }}>
 
-                <img src="resources/folder.png" alt="folder img" loading="lazy" width="100vh" />
+                <img src="resources/Folder1.png" alt="folder img" loading="lazy" width="160vh" height="160vh"
+                    style={{ marginTop: '-10px' }} />
 
                 <section className="folder-details">
                     <h6 className="folder-name">{props.folder.name}</h6>
-                    <small>{props.folder.linksNumber} links</small>
+                    {/**<small>{props.folder.linksNumber} links</small>**/}
                 </section>
             </div>
 

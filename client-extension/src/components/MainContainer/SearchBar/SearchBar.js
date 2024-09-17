@@ -43,7 +43,6 @@ function SearchBar(props) {
             chrome.runtime.sendMessage({
                 action: "searchInWeb",
                 query: props.searchTerm,
-                // folderId: "65f2d88b0eba8598334e85e2"
                 folderId: props.state.currentFolderToLoad._id
             }, (response) => {
                 if (response.success) {
@@ -60,16 +59,16 @@ function SearchBar(props) {
 
     return (
         <div className="row">
-            <div className="search-row">
+            <div className="search-row" style={{ backgroundColor: '#effdff' }}>
 
-                <form
+                <form id="search-form"
                     onSubmit={(e) => e.preventDefault()}
                     role="search">
-                    <input className="form-control py-0" type="search" placeholder="Search..." aria-label="Search"
+                    <span className="input-group-addon" style={{paddingLeft: '10px'}}><i className="bi bi-search"></i></span>
+                    <input className="form-control py-0" id="search-input" type="search" placeholder="" aria-label="Search"
                         value={props.searchTerm}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         onKeyDown={(e) => (
-                            // console.log(e.key)
                             e.key === "Enter" ? handleEnterKey(e) : null
                         )} />
                 </form>
@@ -79,7 +78,7 @@ function SearchBar(props) {
                         value=""
                         id="search-in-web"
                         onChange={(e) => setSearchInWeb(e.target.checked)} />
-                    Search in web
+                    <span id='search-web-text' style={{ color: '#38B6FF' }}>Search the web</span>
                 </label>
             </div>
         </div>

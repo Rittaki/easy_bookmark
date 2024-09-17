@@ -2,7 +2,6 @@ const express = require('express');
 const { 
     getFolder,
     getFolders,
-    // getFoldersByQuery,
     createFolder,
     deleteFolder,
     updateFolder
@@ -15,9 +14,6 @@ router.get('/', getFolders);
 
 // GET a single folder
 router.get('/:id', getFolder);
-
-// // GET folders by parent folder
-// router.get('/:query', getFoldersByQuery);
 
 // POST a new folder
 router.post('/', createFolder);
